@@ -32,6 +32,7 @@ add_executable(FABTemplateGenerator
 
   # utils
   utils/zlibcustomimageextractor.h utils/zlibcustomimageextractor.cpp
+  utils/random.h utils/random.cpp
 )
 target_link_libraries(FABTemplateGenerator
     ${OpenCV_LIBS}
@@ -39,6 +40,8 @@ target_link_libraries(FABTemplateGenerator
     ZLIB::ZLIB
     PkgConfig::LIBZIP
 )
+
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 install(TARGETS FABTemplateGenerator
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
