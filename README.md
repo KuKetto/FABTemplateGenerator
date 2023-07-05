@@ -76,10 +76,10 @@ The main useage is extremly simple, we load a template and a number of required 
 #### Roadmap
 
 - [x] Opening templates and overlaying on top of them
-- [ ] Augmenting:
+- [x] Augmenting:
     - [x] Blurs and noise
-    - [ ] Cut out and flip
-    - [ ] Brigtness and RGB shift augmentation
+    - [x] Cut out and flip
+    - [x] Brigtness and RGB shift augmentation
 - [ ] Image labeling
 - [ ] Config file to generation rules
 - [ ] Automated generation just by running the project
