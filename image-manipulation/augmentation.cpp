@@ -4,7 +4,6 @@ void Augmentation::apply_noise(Image* image_container, double factor)
 {
     // Set the mean and standard deviation for the Gaussian noise
     double mean = 0.0;
-    //double factor = 30.0;
 
     cv::Mat image = image_container->get_opencv_image_object();
 
@@ -23,7 +22,6 @@ void Augmentation::apply_noise(Image* image_container, double factor)
 void Augmentation::apply_lens_blur(Image* image_container, double radius)
 {
     cv::Mat image = image_container->get_opencv_image_object();
-    //double radius = 2.0;
 
     cv::Mat blurred_image;
     cv::GaussianBlur(image, blurred_image, cv::Size(), radius);
@@ -34,7 +32,6 @@ void Augmentation::apply_lens_blur(Image* image_container, double radius)
 void Augmentation::apply_bilateral_blur(Image *image_container, int diameter, double sigma_color, double sigma_space)
 {
     cv::Mat image = image_container->get_opencv_image_object();
-    cv::cvtColor(image, image, cv::COLOR_BGRA2BGR);
     cv::Mat blurred_image;
 
     cv::bilateralFilter(image, blurred_image, diameter, sigma_color, sigma_space);
@@ -49,7 +46,7 @@ void Augmentation::flip_image(Image *image_container)
     image_container->set_opencv_image_object(flipped_image);
 }
 
-void Augmentation::cut_out_image(Image *image_container)
+void Augmentation::cut_out_image(Image *image_container, double radius)
 {
     /* There are 2 ways to cut out the image
      *  - select a rectangular region
@@ -67,7 +64,6 @@ void Augmentation::cut_out_image(Image *image_container)
     Random random;
     std::vector<cv::Point> inpainting_points;
     cv::Mat image = image_container->get_opencv_image_object();
-    cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
 
     bool is_triangle_mode = random.generate_integer(0, 1) == 1 ? true : false;
     if (is_triangle_mode) {
@@ -123,9 +119,59 @@ void Augmentation::cut_out_image(Image *image_container)
     cv::fillConvexPoly(mask, inpainting_points, cv::Scalar(255));
 
     cv::Mat inpainted_image;
-    cv::inpaint(image, mask, inpainted_image, 3, cv::INPAINT_TELEA);
+    cv::inpaint(image, mask, inpainted_image, radius, cv::INPAINT_TELEA);
 
-    cv::cvtColor(inpainted_image, inpainted_image, cv::COLOR_RGB2BGR);
     image_container->set_opencv_image_object(inpainted_image);
+}
+
+void Augmentation::adjust_brightness(Image *image_container, double brightness_constant)
+{
+    try {
+        if (brightness_constant < 0.5 || brightness_constant > 1.5)
+            throw InvalidValueException("Augmentation::adjust_brightness","between 0.5 and 1.5", std::to_string(brightness_constant));
+    } catch (InvalidValueException& ex) {
+        qDebug() << ex.what();
+        return;
+    }
+
+
+    cv::Mat image = image_container->get_opencv_image_object();
+    image *= brightness_constant;
+
+    // Clamp pixel values to the valid range of 0 to 255
+    cv::Mat clamped_image = cv::max(cv::min(image, 255.0f), 0.0f);
+
+    image_container->set_opencv_image_object(clamped_image);
+}
+
+void Augmentation::shift_rgb(Image *image_container, double red_constant, double green_constant, double blue_constant)
+{
+    try {
+        if (red_constant < 0.75 || red_constant > 1.25)
+            throw InvalidValueException("Augmentation::shift_rgb","between 0.75 and 1.25", "red constant of " + std::to_string(red_constant));
+        if (green_constant < 0.75 || green_constant > 1.25)
+            throw InvalidValueException("Augmentation::shift_rgb","between 0.75 and 1.25", "green constant of " + std::to_string(green_constant));
+        if (blue_constant < 0.75 || blue_constant > 1.25)
+            throw InvalidValueException("Augmentation::shift_rgb","between 0.75 and 1.25", "blue constant of " + std::to_string(blue_constant));
+    } catch (InvalidValueException& ex) {
+        qDebug() << ex.what();
+        return;
+    }
+
+    cv::Mat image = image_container->get_opencv_image_object();
+    cv::Vec3d rgb_shift_values = {red_constant, green_constant, blue_constant};
+    for (int i = 0; i < image.rows; i++)
+        for (int j = 0; j < image.cols; j++) {
+            cv::Vec3b& pixel = image.at<cv::Vec3b>(i, j);
+            cv::Vec3f pixel_float(pixel[0], pixel[1], pixel[2]);
+            for (int k = 0; k < 3; k++) {
+                float value_float = pixel_float[k] * rgb_shift_values[k];
+                if (value_float > 255.0f) value_float = 255.0f;
+                if (value_float < 0.0f) value_float = 0.0f;
+                pixel[k] = static_cast<uchar>(value_float);
+            }
+        }
+
+    image_container->set_opencv_image_object(image);
 }
 
