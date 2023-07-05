@@ -30,7 +30,8 @@ void Image::open()
 
     } else {
         try {
-            image = cv::imread(file_path, cv::IMREAD_UNCHANGED);
+            image = cv::imread(file_path, cv::IMREAD_COLOR);
+            cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
         } catch (...) {
             qDebug() << "OpenCV image input read exception";
             return;

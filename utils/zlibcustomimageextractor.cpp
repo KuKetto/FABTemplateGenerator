@@ -30,6 +30,8 @@ bool ZLibCustomImageExtractor::extract(zip* _zip_file)
 
     // Create an OpenCV Mat object from the image data
     files.image_data = cv::imdecode(cv::Mat(1, image_stats.size, CV_8UC1, image_data), cv::IMREAD_COLOR);
+    cv::cvtColor(files.image_data, files.image_data, cv::COLOR_BGR2RGB);
+
     delete[] image_data;
 
     // Extract the JSON file

@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 #include "../nlohmann-json/json.hpp"
 
 class ZLibCustomImageExtractor
