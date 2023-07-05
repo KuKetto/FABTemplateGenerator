@@ -6,7 +6,7 @@
 void demo() {
     // First we need to load the template image.
     Image template_image;
-    template_image.set_file_path("YOUR TEMPLATE PATH /template/image.zip");
+    template_image.set_file_path("./examples/templates/image.zip");
     template_image.open();
 
     // Set the image as template, we will get the number of required images returned.
@@ -16,9 +16,10 @@ void demo() {
 
     // Open the images we want to overlay with.
     QVector<Image*> inputs;
+
     for (int i = 0; i < required_image_count; i++) {
         inputs.push_back(new Image());
-        inputs[i]->set_file_path("YOUR INPUT IMAGE PATH /input/input" + std::to_string(i+1) + ".webp");
+        inputs[i]->set_file_path("./examples/inputs/input" + std::to_string(i+1) + ".webp");
         inputs[i]->open();
     }
 
@@ -36,7 +37,7 @@ void demo() {
     compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
     compression_params.push_back(40); // Adjust the quality value as per your requirements (0-100)
 
-    cv::imwrite("YOUR OUTPUT IMAGE PATH /output/output.jpg", result, compression_params);
+    cv::imwrite("./examples/outputs/output.jpg", result, compression_params);
 
     qDebug() << "Finished!";
 
