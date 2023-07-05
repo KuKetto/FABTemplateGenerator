@@ -26,7 +26,13 @@ void demo() {
     // To make the dataset flexible we need much data
     // of one singular item (card) and we also need to augment it.
     Augmentation augmentation;
-    augmentation.apply_bilateral_blur(inputs[1], 43, 200, 64);
+    augmentation.apply_noise(inputs[0], 35);
+    augmentation.apply_lens_blur(inputs[1], 2);
+    augmentation.apply_bilateral_blur(inputs[2], 43, 200, 64);
+    augmentation.flip_image(inputs[0]);
+    augmentation.cut_out_image(inputs[3], 10);
+    augmentation.adjust_brightness(inputs[4], 0.57);
+    augmentation.shift_rgb(inputs[5], 1.1, 0.85, 0.9);
 
     // Set the inputs and overlay
     overlay.set_images_to_overlay(inputs);
