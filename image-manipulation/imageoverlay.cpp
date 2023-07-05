@@ -16,12 +16,12 @@ void ImageOverlay::set_images_to_overlay(QVector<Image*> images_to_overlay)
 cv::Mat ImageOverlay::overlay()
 {
     cv::Mat overlayed_image;
-    cv::cvtColor(template_image->get_opencv_image_object(), overlayed_image, cv::COLOR_BGR2BGRA);
+    cv::cvtColor(template_image->get_opencv_image_object(), overlayed_image, cv::COLOR_RGB2BGRA);
     double blending_factor = 1;
 
     for (int i = 0; i < images_to_overlay.size(); i++) {
         cv::Mat transparent_input_image;
-        cv::cvtColor(images_to_overlay.value(i)->get_opencv_image_object(), transparent_input_image, cv::COLOR_BGR2BGRA);
+        cv::cvtColor(images_to_overlay.value(i)->get_opencv_image_object(), transparent_input_image, cv::COLOR_RGB2BGRA);
 
         cv::Mat warped_image;
 
