@@ -33,6 +33,9 @@ add_executable(FABTemplateGenerator
   # utils
   utils/zlibcustomimageextractor.h utils/zlibcustomimageextractor.cpp
   utils/random.h utils/random.cpp
+
+  # utils::exceptions
+  utils/exceptions/invalidvalueexception.h utils/exceptions/invalidvalueexception.cpp
 )
 target_link_libraries(FABTemplateGenerator
     ${OpenCV_LIBS}
