@@ -22,6 +22,7 @@ add_executable(FABTemplateGenerator
   # containers
   containers/cardpositiondata.h containers/cardpositiondata.cpp
   containers/image.h containers/image.cpp
+  containers/config.h containers/config.cpp
   containers/inputdata.h containers/inputdata.cpp
 
   # image manipulation
