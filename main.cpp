@@ -2,6 +2,7 @@
 #include "containers/image.h"
 #include "image-manipulation/imageoverlay.h"
 #include "image-manipulation/augmentation.h"
+#include "utils/configreader.h"
 
 void demo() {
     // First we need to load the template image.
@@ -56,7 +57,9 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    demo();
+    //demo();
+    ConfigReader config_reader("./config.json");
+    if (!config_reader.read_config()) return -1;
 
     return a.exec();
 }
