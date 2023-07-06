@@ -81,7 +81,7 @@ The main useage is extremly simple, we load a template and a number of required 
     - [x] Cut out and flip
     - [x] Brigtness and RGB shift augmentation
 - [ ] Image labeling
-- [ ] Config file to generation rules
+- [x] Config file to generation rules
 - [ ] Automated generation just by running the project
 - [ ] Code optimalization and testing
 - [ ] Manual dataset creation:
