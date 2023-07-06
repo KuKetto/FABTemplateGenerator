@@ -22,6 +22,7 @@ add_executable(FABTemplateGenerator
   # containers
   containers/cardpositiondata.h containers/cardpositiondata.cpp
   containers/image.h containers/image.cpp
+  containers/inputdata.h containers/inputdata.cpp
 
   # image manipulation
   image-manipulation/imageoverlay.h image-manipulation/imageoverlay.cpp
@@ -33,6 +34,7 @@ add_executable(FABTemplateGenerator
   # utils
   utils/zlibcustomimageextractor.h utils/zlibcustomimageextractor.cpp
   utils/random.h utils/random.cpp
+  utils/configreader.h utils/configreader.cpp
 
   # utils::exceptions
   utils/exceptions/invalidvalueexception.h utils/exceptions/invalidvalueexception.cpp
@@ -45,6 +47,7 @@ target_link_libraries(FABTemplateGenerator
 )
 
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/config.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
 
 install(TARGETS FABTemplateGenerator
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
