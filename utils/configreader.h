@@ -4,22 +4,10 @@
 #include <QDebug>
 #include <fstream>
 #include "../nlohmann-json/json.hpp"
+#include "../containers/config.h"
 
 class ConfigReader
 {
-public:
-    struct Config {
-        unsigned image_count;
-        unsigned normal_image_count;
-        unsigned augment_count;
-        unsigned augment_noise;
-        unsigned augment_lens_blur;
-        unsigned augment_bilateral_blur;
-        unsigned augment_image_flip;
-        unsigned augment_cut_out;
-        unsigned augment_brightness;
-        unsigned augment_rgb_shift;
-    };
 private:
     enum DefaultConfig {
         IMAGE_COUNT = 150,
