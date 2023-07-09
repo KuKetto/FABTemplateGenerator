@@ -83,7 +83,7 @@ The main useage is extremly simple, we load a template and a number of required 
     - [x] Blurs and noise
     - [x] Cut out and flip
     - [x] Brigtness and RGB shift augmentation
-- [ ] Image labeling
+- [x] Image labeling
 - [x] Config file to generation rules
 - [x] Automated generation just by running the project
 - [ ] Code optimalization and testing
