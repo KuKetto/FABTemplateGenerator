@@ -41,6 +41,7 @@ public:
 
     unsigned short use_this_image();
     bool image_used(const unsigned short& operation_type);
+    unsigned get_class_id() const {return class_id;};
 };
 
 #endif // INPUTDATA_H

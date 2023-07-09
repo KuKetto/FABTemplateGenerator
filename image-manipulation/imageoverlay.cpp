@@ -13,13 +13,19 @@ void ImageOverlay::set_images_to_overlay(QVector<Image*> images_to_overlay)
     this->images_to_overlay = images_to_overlay;
 }
 
-cv::Mat ImageOverlay::overlay()
+ImageOverlay::OverlayedResult ImageOverlay::overlay()
 {
+    OverlayedResult result;
     cv::Mat overlayed_image;
     cv::cvtColor(template_image->get_opencv_image_object(), overlayed_image, cv::COLOR_RGB2BGRA);
     double blending_factor = 1;
 
     for (int i = 0; i < images_to_overlay.size(); i++) {
+        result.input_overlay_positions.push_back(QPair<std::string, QPair<cv::Point2f, cv::Point2f>>(
+            images_to_overlay.value(i)->get_file_path(),
+            get_bounding_boxes(this->template_image->get_card_positions_perspective(i))
+        ));
+
         cv::Mat transparent_input_image;
         cv::cvtColor(images_to_overlay.value(i)->get_opencv_image_object(), transparent_input_image, cv::COLOR_RGB2BGRA);
 
@@ -45,7 +51,10 @@ cv::Mat ImageOverlay::overlay()
         blending_factor *= (1.0 - blending_factor);
     }
 
-    return overlayed_image;
+    result.overlayed_image = overlayed_image;
+    result.image_width = template_image->get_opencv_image_object().cols;
+    result.image_height = template_image->get_opencv_image_object().rows;
+    return result;
 }
 
 cv::Mat ImageOverlay::create_perspective_matrix_for_image(int image_index)
@@ -90,4 +99,21 @@ cv::Mat ImageOverlay::create_mask_from_alpha(const cv::Mat& alpha)
 
     cv::threshold(mask, mask, 1, 255, cv::THRESH_BINARY_INV);
     return mask;
+}
+
+QPair<cv::Point2f, cv::Point2f> ImageOverlay::get_bounding_boxes(std::vector<cv::Point2f> points)
+{
+    float min_x_pos = 9999.0;
+    float min_y_pos = 9999.0;
+    float max_x_pos = 0.0;
+    float max_y_pos = 0.0;
+    for (auto& point : points) {
+        if (point.x < min_x_pos) min_x_pos = point.x;
+        else if (point.x > max_x_pos) max_x_pos = point.x;
+
+        if (point.y < min_y_pos) min_y_pos = point.y;
+        else if (point.y > max_y_pos) max_y_pos = point.y;
+    }
+
+    return QPair<cv::Point2f, cv::Point2f>(cv::Point2f(min_x_pos, min_y_pos), cv::Point2f(max_x_pos, max_y_pos));
 }

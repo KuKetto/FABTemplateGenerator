@@ -1,6 +1,6 @@
 #include "generation.h"
 
-Generation::Generation(const std::string &input_directory, const std::string &template_directory, const std::string &config_path, const std::string &output_path):
+Generation::Generation(const std::string &input_directory, const std::string &template_directory, const std::string &config_path, const std::string &output_path, const std::string& class_file_output_path):
     output_path(output_path)
 {
     ConfigReader config_reader(config_path);
@@ -9,7 +9,15 @@ Generation::Generation(const std::string &input_directory, const std::string &te
     input_data_container = new InputDataContainer(input_directory, config_reader.get_config());
     template_container = new TemplateContainer(template_directory, input_data_container->get_image_count());
 
-    MAXIMUM_NUMBER_OF_ITERATIONS = input_data_container->get_image_count() * config_reader.get_config().get_image_count() + 1;
+    MAXIMUM_NUMBER_OF_ITERATIONS = input_data_container->get_image_count() * config_reader.get_config().get_image_count();
+
+    QMap<unsigned, std::string> classes = input_data_container->get_classes();
+    std::ofstream image_annotations(class_file_output_path + "/classes.txt");
+    for (int i = 0; i < classes.size(); i++) {
+        image_annotations << classes[i];
+        if (i < classes.size() - 1) image_annotations << "\n";
+    }
+    image_annotations.close();
 }
 
 Generation::~Generation()
@@ -22,11 +30,10 @@ void Generation::generate()
 {
     int iterator = 0;
     qDebug() << "maximum iteration count: " << MAXIMUM_NUMBER_OF_ITERATIONS;
-    MAXIMUM_NUMBER_OF_ITERATIONS = 10;
+    MAXIMUM_NUMBER_OF_ITERATIONS = 3;
     while (input_data_container->get_image_count() > 0 && iterator <= MAXIMUM_NUMBER_OF_ITERATIONS) {
-        qDebug() << "iteration: " << iterator;
+        std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
         Image* template_image = template_container->select_a_template();
-        qDebug() << "\ttemplate selected";
         template_image->open();
 
         Augmentation augmentation;
@@ -35,7 +42,6 @@ void Generation::generate()
         QVector<QPair<Image *, unsigned int>> selected_inputs;
         for (int i = 0; i < overlay.set_template_image(template_image); i++) {
             QPair<Image *, unsigned int> selected_input = input_data_container->select_an_input();
-            qDebug() << "\tan input was selected";
 
             // we need copies because augmentation overwrites the image
             Image* overlay_input = new Image();
@@ -71,28 +77,35 @@ void Generation::generate()
             selected_inputs.push_back(selected_input);
             overlay_inputs.push_back(overlay_input);
         }
-        qDebug() << "\tinput selection finished";
 
         overlay.set_images_to_overlay(overlay_inputs);
-        cv::Mat result = overlay.overlay();
-        qDebug() << "\toverlay finished";
+        ImageOverlay::OverlayedResult result = overlay.overlay();
 
-        std::vector<int> compression_params;
-        compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
-        compression_params.push_back(40);
-        qDebug() << "\tresult has been written";
+        cv::Mat compressed_image;
+        cv::resize(result.overlayed_image, compressed_image, cv::Size(1280, 720));
 
-        cv::imwrite(output_path + "/output_" + std::to_string(iterator) + ".jpg", result, compression_params);
+        cv::imwrite(output_path + "/output_" + std::to_string(iterator) + ".jpg", compressed_image);
+        std::ofstream image_annotations(output_path + "/output_" + std::to_string(iterator) + ".txt");
         for (int i = 0; i < selected_inputs.size(); i++) {
             overlay_inputs[i]->close();
             delete overlay_inputs[i];
 
-            if (input_data_container->on_image_used(selected_inputs[i])) template_container->on_image_deleted();
+            InputDataContainer::PostImageUsedData post_image_used_data = input_data_container->on_image_used(selected_inputs[i], result.input_overlay_positions, result.image_width, result.image_height);
+            if (post_image_used_data.was_image_removed) template_container->on_image_deleted();
+
+            image_annotations << post_image_used_data.class_id << " "
+                              << post_image_used_data.image_center.first
+                              << " " << post_image_used_data.image_center.second
+                              << " " << post_image_used_data.boundary_size.first
+                              << " " << post_image_used_data.boundary_size.second;
+            if (i < selected_inputs.size() - 1) image_annotations << "\n";
         }
-        qDebug() << "\tinput copies has been cleaned up";
+        image_annotations.close();
 
         template_image->close();
         iterator++;
-        qDebug() << "iteration: " << iterator - 1 << " finished";
+        std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
+        std::chrono::duration<double> duration = end - start;
+        qDebug() << "iteration (" << iterator - 1 << "of " << MAXIMUM_NUMBER_OF_ITERATIONS << ") finished in " << duration.count() << "seconds";
     }
 }

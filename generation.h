@@ -7,6 +7,7 @@
 #include "utils/configreader.h"
 #include "image-manipulation/imageoverlay.h"
 #include "image-manipulation/augmentation.h"
+#include <chrono>
 
 class Generation
 {
@@ -16,7 +17,7 @@ class Generation
 
     unsigned long long MAXIMUM_NUMBER_OF_ITERATIONS;
 public:
-    Generation(const std::string& input_directory, const std::string& template_directory, const std::string& config_path, const std::string& output_path);
+    Generation(const std::string& input_directory, const std::string& template_directory, const std::string& config_path, const std::string& output_path, const std::string& class_file_output_path);
     ~Generation();
 
     void generate();
