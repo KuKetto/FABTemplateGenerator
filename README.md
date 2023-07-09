@@ -1,3 +1,6 @@
+# WARNING!
+Altough the project's main purpose and functionality works but the codebase will be rebased.
+
 # FAB Template Generator
 The goal of this project to aid [YOLO](https://docs.ultralytics.com/) dataset creation for card detection in Flesh and Blood, an ever-changing competitive card game. While most professional games are streamed live, it can be confusing for new players who don't know all the cards yet.
 
@@ -82,7 +85,7 @@ The main useage is extremly simple, we load a template and a number of required 
     - [x] Brigtness and RGB shift augmentation
 - [ ] Image labeling
 - [x] Config file to generation rules
-- [ ] Automated generation just by running the project
+- [x] Automated generation just by running the project
 - [ ] Code optimalization and testing
 - [ ] Manual dataset creation:
     - [ ] Templates
