@@ -7,8 +7,8 @@ class Random
 {
 public:
     Random(){};
-    double generate_double(double lower_boundary, double upper_boundary);
-    int generate_integer(int lower_boundary, int upper_boundary);
+    static double generate_double(double lower_boundary, double upper_boundary);
+    static int generate_integer(int lower_boundary, int upper_boundary);
 };
 
 #endif // RANDOM_H
