@@ -1,8 +1,9 @@
 #include "image.h"
 
-Image::Image()
+Image::Image(const bool &is_template):
+    is_template(is_template)
 {
-    card_positions = new QVector<CardPositionData>();
+
 }
 
 Image::~Image()
@@ -43,8 +44,11 @@ void Image::open()
 
 void Image::close()
 {
-    delete card_positions;
-    is_image_open = false;
+    if (is_image_open) {
+        if (is_template) delete card_positions;
+        image = cv::Mat();
+        is_image_open = false;
+    }
 }
 
 void Image::show()
@@ -55,6 +59,8 @@ void Image::show()
 
 void Image::load_card_data(nlohmann::json json_data)
 {
+    card_positions = new QVector<CardPositionData>();
+
     for (auto& template_position : json_data) {
         CardPositionData card_data;
 
