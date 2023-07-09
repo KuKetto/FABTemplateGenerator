@@ -18,12 +18,15 @@ pkg_check_modules(LIBZIP REQUIRED IMPORTED_TARGET libzip)
 
 add_executable(FABTemplateGenerator
   main.cpp
+  generation.h generation.cpp
 
   # containers
   containers/cardpositiondata.h containers/cardpositiondata.cpp
   containers/image.h containers/image.cpp
   containers/config.h containers/config.cpp
   containers/inputdata.h containers/inputdata.cpp
+  containers/templatecontainer.h containers/templatecontainer.cpp
+  containers/inputdatacontainer.h containers/inputdatacontainer.cpp
 
   # image manipulation
   image-manipulation/imageoverlay.h image-manipulation/imageoverlay.cpp
