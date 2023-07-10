@@ -33,6 +33,7 @@ void InputData::init_possible_operation_types_vector(unsigned short operation_ty
 unsigned short InputData::use_this_image()
 {
     if (remaining_image_count < 1) return 65535;
+    remaining_image_count--;
     if (remaining_augmentation_count < 1) return OPERATION_TYPE::NORMAL;
 
     unsigned short result = possible_operation_types.at(
@@ -68,7 +69,6 @@ bool InputData::image_used(const unsigned short &operation_type)
     }
 
     if (operation_type > 0) remaining_augmentation_count--;
-    remaining_image_count--;
 
     if (remaining_image_count < 1) return true;
     return false;
