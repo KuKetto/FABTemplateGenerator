@@ -53,13 +53,15 @@ void TemplateContainer::on_image_deleted()
     QList<int> indexes_to_remove;
     int index = 0;
     for (auto& _template : templates) {
-        if (_template.second == maximum_required_images) {
+        if (_template.second > image_count) {
             _template.first->close();
             delete _template.first;
             indexes_to_remove.append(index);
         } else if (_template.second > new_maximum) new_maximum = _template.second;
         index++;
     }
+
+    maximum_required_images = new_maximum;
 
     for (int i = indexes_to_remove.size() - 1; i >= 0; i--) {
         templates.removeAt(indexes_to_remove.at(i));
