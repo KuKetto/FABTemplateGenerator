@@ -30,7 +30,7 @@ void Generation::generate()
 {
     int iterator = 0;
     qDebug() << "maximum iteration count: " << MAXIMUM_NUMBER_OF_ITERATIONS;
-    MAXIMUM_NUMBER_OF_ITERATIONS = 3;
+    //MAXIMUM_NUMBER_OF_ITERATIONS = 20;
     while (input_data_container->get_image_count() > 0 && iterator <= MAXIMUM_NUMBER_OF_ITERATIONS) {
         std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
         Image* template_image = template_container->select_a_template();
@@ -84,14 +84,25 @@ void Generation::generate()
         cv::Mat compressed_image;
         cv::resize(result.overlayed_image, compressed_image, cv::Size(1280, 720));
 
-        cv::imwrite(output_path + "/output_" + std::to_string(iterator) + ".jpg", compressed_image);
-        std::ofstream image_annotations(output_path + "/output_" + std::to_string(iterator) + ".txt");
+        cv::imwrite(output_path + "/images/train/output_" + std::to_string(iterator) + ".jpg", compressed_image);
+        std::ofstream image_annotations(output_path + "/labels/train/output_" + std::to_string(iterator) + ".txt");
+        QVector<int> images_to_be_removed;
         for (int i = 0; i < selected_inputs.size(); i++) {
             overlay_inputs[i]->close();
             delete overlay_inputs[i];
-
             InputDataContainer::PostImageUsedData post_image_used_data = input_data_container->on_image_used(selected_inputs[i], result.input_overlay_positions, result.image_width, result.image_height);
-            if (post_image_used_data.was_image_removed) template_container->on_image_deleted();
+            if (post_image_used_data.should_image_be_removed) {
+
+                bool is_image_already_scheduled_for_deletion = false;
+                for (int j = 0; j < images_to_be_removed.size(); j++)
+                    if (selected_inputs[i].first->get_file_path() == selected_inputs[j].first->get_file_path()) {
+                        is_image_already_scheduled_for_deletion = true;
+                        break;
+                    }
+                if (!is_image_already_scheduled_for_deletion) {
+                    images_to_be_removed.push_back(i);
+                }
+            }
 
             image_annotations << post_image_used_data.class_id << " "
                               << post_image_used_data.image_center.first
@@ -102,10 +113,15 @@ void Generation::generate()
         }
         image_annotations.close();
 
+        for (int j = 0; j < images_to_be_removed.size(); j++) {
+            input_data_container->clean_up_finished_image(selected_inputs[j]);
+            template_container->on_image_deleted();
+        }
+
         template_image->close();
         iterator++;
         std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
         std::chrono::duration<double> duration = end - start;
-        qDebug() << "iteration (" << iterator - 1 << "of " << MAXIMUM_NUMBER_OF_ITERATIONS << ") finished in " << duration.count() << "seconds";
+        qDebug() << "iteration " << iterator - 1 << " finished in " << duration.count() << "seconds\n\t" << input_data_container->get_image_count() << " image left\n---";
     }
 }

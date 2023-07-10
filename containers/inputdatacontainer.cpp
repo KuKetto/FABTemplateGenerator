@@ -31,8 +31,24 @@ InputDataContainer::~InputDataContainer()
 
 QPair<Image *, unsigned int> InputDataContainer::select_an_input()
 {
-    QPair<Image*,InputData> random_input = inputs.at(Random::generate_integer(0, inputs.size() - 1));
-    return QPair<Image*, unsigned int>(random_input.first, random_input.second.use_this_image());
+    int random = Random::generate_integer(0, inputs.size() - 1);
+    QPair<Image*,InputData> random_input = inputs.at(random);
+    unsigned int operation = inputs[random].second.use_this_image();
+    if (operation != 65535)
+        return QPair<Image*, unsigned int>(random_input.first, operation);
+
+    qDebug("this image cannot be used anymore");
+    if (inputs.size() == 1) {
+        throw std::invalid_argument("There was only 1 input with 0 usage left but the template required more than that. The generation will stop now.");
+    } else {
+        qDebug("Trying to brute-force a valid input instead of recursivly applying random");
+        for (auto& input : inputs) {
+            operation = input.second.use_this_image();
+            if (operation != 65535) return QPair<Image*, unsigned int>(input.first, operation);
+        }
+    }
+
+    throw std::invalid_argument("There were inputs only with 0 usage left but the template required more than that. The generation will stop now.");
 }
 
 InputDataContainer::PostImageUsedData InputDataContainer::on_image_used(const QPair<Image *, unsigned int> &image, QVector<QPair<std::string, QPair<cv::Point2f, cv::Point2f>>>& boundaries, int image_width, int image_height)
@@ -41,7 +57,6 @@ InputDataContainer::PostImageUsedData InputDataContainer::on_image_used(const QP
     for (int i = 0; i < inputs.size(); i++) {
         if (inputs.at(i).first->get_file_path() == image.first->get_file_path()) {
             data.class_id = inputs[i].second.get_class_id();
-
             QPair<cv::Point2f, cv::Point2f> boundary;
             int index = 0;
             for (auto& _boundary : boundaries) {
@@ -61,20 +76,28 @@ InputDataContainer::PostImageUsedData InputDataContainer::on_image_used(const QP
             data.boundary_size = normalized_boundaries.second;
 
             if (inputs[i].second.image_used(image.second)) {
-                inputs[i].first->close();
-                delete inputs[i].first;
-                inputs.removeAt(i);
-
-                data.was_image_removed = true;
+                data.should_image_be_removed = true;
                 return data;
             }
-            data.was_image_removed = false;
+            data.should_image_be_removed = false;
             return data;
         }
     }
 
-    data.was_image_removed = false;
+    data.should_image_be_removed = false;
     return data;
+}
+
+void InputDataContainer::clean_up_finished_image(const QPair<Image *, unsigned int> &image)
+{
+    for (int i = 0; i < inputs.size(); i++) {
+        if (inputs.at(i).first->get_file_path() == image.first->get_file_path()) {
+            inputs[i].first->close();
+            delete inputs[i].first;
+            inputs.removeAt(i);
+            return;
+        }
+    }
 }
 
 double InputDataContainer::normalize_value(double value, double normalizing_factor)

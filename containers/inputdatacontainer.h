@@ -14,7 +14,7 @@ class InputDataContainer
     QPair<QPair<double, double>, QPair<double, double>> get_image_normalized_boundaries(QPair<cv::Point2f, cv::Point2f> boundaries, int image_width, int image_height);
 public:
     struct PostImageUsedData {
-        bool was_image_removed;
+        bool should_image_be_removed;
         unsigned class_id;
         QPair<double, double> boundary_size;
         QPair<double, double> image_center;
@@ -27,6 +27,7 @@ public:
     unsigned int get_image_count() const {return inputs.size();}
     QPair<Image*, unsigned int> select_an_input();
     PostImageUsedData on_image_used(const QPair<Image*, unsigned int>& image, QVector<QPair<std::string, QPair<cv::Point2f, cv::Point2f>>>& boundaries, int image_width, int image_height);
+    void clean_up_finished_image(const QPair<Image*, unsigned int>& image);
 };
 
 #endif // INPUTDATACONTAINER_H
