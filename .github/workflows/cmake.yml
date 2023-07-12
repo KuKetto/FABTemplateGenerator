@@ -52,10 +52,11 @@ jobs:
         wget -O opencv.zip https://github.com/opencv/opencv/archive/4.8.0.zip
         unzip opencv.zip
         mkdir -p build && cd build
-        cmake ../opencv-4.8.0
+        cmake -S ../opencv-4.8.0 -B . -D BUILD_TESTS=False -D BUILD_PERF_TESTS=False
         cmake --build .
         sudo make install
         cd ..
+
         
     - name: Clear cache
       run: |
