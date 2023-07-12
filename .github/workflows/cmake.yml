@@ -70,7 +70,7 @@ jobs:
       run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build tests
-      run: cmake --build ${{github.workspace}}/build --target Test-Containers --config Release
+      run: cmake --build ${{github.workspace}}/build --target FABTemplateGenerator-Tests --config Release
 
     - name: Build
       # Build your program with the given configuration
@@ -80,5 +80,5 @@ jobs:
       working-directory: ${{github.workspace}}/build
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
+      run: ctest -C ${{env.BUILD_TYPE}} --extra-verbose --output-on-failure
 
