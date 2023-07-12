@@ -26,7 +26,7 @@ private:
 public:
     ConfigReader(const std::string& file_path);
 
-    bool read_config();
+    bool read_config(const bool& write_config_if_it_does_not_exists = true);
     Config get_config();
 };
 

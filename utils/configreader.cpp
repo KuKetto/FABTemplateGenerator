@@ -6,7 +6,7 @@ ConfigReader::ConfigReader(const std::string &file_path):
 
 }
 
-bool ConfigReader::read_config()
+bool ConfigReader::read_config(const bool &write_config_if_it_does_not_exists)
 {
     try {
         std::ifstream config_file(file_path);
@@ -47,7 +47,7 @@ bool ConfigReader::read_config()
             config.set_augment_brightness(DefaultConfig::AUGMENT_BRIGHTNESS);
             config.set_augment_rgb_shift(DefaultConfig::AUGMENT_RGB_SHIFT);
 
-            write_default_config();
+            if (write_config_if_it_does_not_exists) write_default_config();
         } else {
             qDebug() << "Exception: " << e.what();
             return false;
