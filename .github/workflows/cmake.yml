@@ -29,7 +29,7 @@ jobs:
       run: |
         sudo apt install -y zlib1g zlib1g-dev
         wget -O libzip.gz https://libzip.org/download/libzip-1.10.0.tar.gz
-        tar –xvzf libzip.gz
+        tar -xvzf libzip.gz
         cd libzip-1.10.0
         mkdir build
         cd build
