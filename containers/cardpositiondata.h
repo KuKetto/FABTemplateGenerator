@@ -44,36 +44,36 @@ public:
      *
      *  @param top_left_pos: a std::pair of a position in (x,y) order
     */
-    void set_top_left_pos(std::pair<unsigned int, unsigned int> top_left_pos) {this->top_left_pos = top_left_pos;};
+    void set_top_left_pos(const std::pair<unsigned int, unsigned int>& top_left_pos) {this->top_left_pos = top_left_pos;};
 
     /** @brief A setter for the card's top right corner position (x,y) pair
      *
      *  @param top_right_pos: a std::pair of a position in (x,y) order
     */
-    void set_top_right_pos(std::pair<unsigned int, unsigned int> top_right_pos) {this->top_right_pos = top_right_pos;};
+    void set_top_right_pos(const std::pair<unsigned int, unsigned int>& top_right_pos) {this->top_right_pos = top_right_pos;};
 
     /** @brief A setter for the card's bottom right corner position (x,y) pair
      *
      *  @param bottom_right_pos: a std::pair of a position in (x,y) order
     */
-    void set_bottom_right_pos(std::pair<unsigned int, unsigned int> bottom_right_pos) {this->bottom_right_pos = bottom_right_pos;};
+    void set_bottom_right_pos(const std::pair<unsigned int, unsigned int>& bottom_right_pos) {this->bottom_right_pos = bottom_right_pos;};
 
     /** @brief A setter for the card's bottom left corner position (x,y) pair
      *
      *  @param bottom_left_pos: a std::pair of a position in (x,y) order
     */
-    void set_bottom_left_pos(std::pair<unsigned int, unsigned int> bottom_left_pos) {this->bottom_left_pos = bottom_left_pos;};
+    void set_bottom_left_pos(const std::pair<unsigned int, unsigned int>& bottom_left_pos) {this->bottom_left_pos = bottom_left_pos;};
 
 
 
     /** @brief A getter for the card's top left corner position (x,y) pair*/
-    std::pair<unsigned int, unsigned int> get_top_left_pos() {return top_left_pos;};
+    std::pair<unsigned int, unsigned int> get_top_left_pos() const {return top_left_pos;};
     /** @brief A getter for the card's top right corner position (x,y) pair*/
-    std::pair<unsigned int, unsigned int> get_top_right_pos() {return top_right_pos;};
+    std::pair<unsigned int, unsigned int> get_top_right_pos() const {return top_right_pos;};
     /** @brief A getter for the card's bottom right corner position (x,y) pair*/
-    std::pair<unsigned int, unsigned int> get_bottom_right_pos() {return bottom_right_pos;};
+    std::pair<unsigned int, unsigned int> get_bottom_right_pos() const {return bottom_right_pos;};
     /** @brief A getter for the card's bottom left corner position (x,y) pair*/
-    std::pair<unsigned int, unsigned int> get_bottom_left_pos() {return bottom_left_pos;};
+    std::pair<unsigned int, unsigned int> get_bottom_left_pos() const {return bottom_left_pos;};
 
 
 
