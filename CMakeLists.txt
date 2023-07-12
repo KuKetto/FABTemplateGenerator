@@ -14,6 +14,7 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 find_package( OpenCV REQUIRED )
 find_package(ZLIB)
 find_package(PkgConfig REQUIRED)
+find_package(Catch2 3 REQUIRED)
 pkg_check_modules(LIBZIP REQUIRED IMPORTED_TARGET libzip)
 
 add_executable(FABTemplateGenerator
@@ -43,6 +44,17 @@ add_executable(FABTemplateGenerator
   # utils::exceptions
   utils/exceptions/invalidvalueexception.h utils/exceptions/invalidvalueexception.cpp
 )
+
+add_executable(Test-Containers
+    tests/containers/test-cardpositiondata.cpp
+)
+
+target_link_libraries(Test-Containers
+    Catch2::Catch2WithMain
+    ${OpenCV_LIBS}
+    Qt${QT_VERSION_MAJOR}::Core
+)
+
 target_link_libraries(FABTemplateGenerator
     ${OpenCV_LIBS}
     Qt${QT_VERSION_MAJOR}::Core
