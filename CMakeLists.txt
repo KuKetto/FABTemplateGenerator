@@ -57,6 +57,7 @@ enable_testing()
 
 add_executable(FABTemplateGenerator-Tests
     tests/containers/test-cardpositiondata.cpp
+    tests/containers/test-config.cpp
 )
 
 target_link_libraries(FABTemplateGenerator-Tests
