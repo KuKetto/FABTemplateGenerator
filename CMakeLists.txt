@@ -46,6 +46,7 @@ add_executable(FABTemplateGenerator
   utils/exceptions/filenotfound.h utils/exceptions/filenotfound.cpp
   utils/exceptions/libraryexception.h utils/exceptions/libraryexception.cpp
   utils/exceptions/badusageexception.h utils/exceptions/badusageexception.cpp
+  utils/exceptions/dividebyzero.h utils/exceptions/dividebyzero.cpp
 )
 
 target_link_libraries(FABTemplateGenerator
