@@ -20,21 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Cache Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            /usr/local/include/opencv2
-            /usr/local/include/Catch2
-            /usr/local/include/zip
-            /usr/include/qt5
-            /usr/lib/x86_64-linux-gnu/qt5
-            /usr/local/lib
-          key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-dependencies-
-
-            
       - name: Install Qt dependencies
         run: |
           sudo apt-get update
@@ -71,6 +56,20 @@ jobs:
           cmake --build .
           sudo make install
           cd ..
+
+      - name: Cache Dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/include/opencv2
+            /usr/local/include/Catch2
+            /usr/local/include/zip
+            /usr/include/qt5
+            /usr/lib/x86_64-linux-gnu/qt5
+            /usr/local/lib
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-dependencies-
         
       - name: Clear cache
         run: |
