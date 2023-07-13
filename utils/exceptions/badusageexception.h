@@ -9,9 +9,9 @@ class BadUsageException : std::exception
 public:
     BadUsageException(const std::string& function,
                       const std::string& reason,
-                      const std::string& provided_value,
-                      const std::string& provided_value_type,
-                      const std::string& expected_value_type);
+                      const std::string& provided_value = "",
+                      const std::string& provided_value_type = "",
+                      const std::string& expected_value_type = "");
 
     const char* what() const noexcept override;
 };
