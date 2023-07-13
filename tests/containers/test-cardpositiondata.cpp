@@ -15,6 +15,22 @@ TEST_CASE("CardPositionData class", "[CardPositionData]") {
     SECTION("Setters and Getters are working as expected") {
         CardPositionData* card = new CardPositionData();
 
+        SECTION("Check if top left position can be set without exception") {
+            REQUIRE_NOTHROW(card->set_top_left_pos(std::pair<unsigned int, unsigned int>(0,0)));
+        }
+
+        SECTION("Check if top right position can be set without exception") {
+            REQUIRE_NOTHROW(card->set_top_right_pos(std::pair<unsigned int, unsigned int>(0,1)));
+        }
+
+        SECTION("Check if bottom right position can be set without exception") {
+            REQUIRE_NOTHROW(card->set_bottom_right_pos(std::pair<unsigned int, unsigned int>(1,1)));
+        }
+
+        SECTION("Check if bottom left position can be set without exception") {
+            REQUIRE_NOTHROW(card->set_bottom_left_pos(std::pair<unsigned int, unsigned int>(1,0)));
+        }
+
         card->set_top_left_pos(std::pair<unsigned int, unsigned int>(0,0));
         card->set_top_right_pos(std::pair<unsigned int, unsigned int>(0,1));
         card->set_bottom_right_pos(std::pair<unsigned int, unsigned int>(1,1));

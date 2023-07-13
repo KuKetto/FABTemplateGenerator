@@ -21,6 +21,46 @@ TEST_CASE("Config class", "[Config, InvalidValueException]") {
 
         config = new Config();
 
+        SECTION("Check if image count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_image_count(60));
+        }
+
+        SECTION("Check if normal image count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_normal_image_count(30));
+        }
+
+        SECTION("Check if augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_count(30));
+        }
+
+        SECTION("Check if noise augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_noise(4));
+        }
+
+        SECTION("Check if lens blur augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_lens_blur(5));
+        }
+
+        SECTION("Check if bilateral blur augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_bilateral_blur(3));
+        }
+
+        SECTION("Check if image flip augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_image_flip(8));
+        }
+
+        SECTION("Check if cut out augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_cut_out(9));
+        }
+
+        SECTION("Check if brightness adjustion augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_brightness(1));
+        }
+
+        SECTION("Check if rgb shift augment count can be set without exception") {
+            REQUIRE_NOTHROW(config->set_augment_rgb_shift(0));
+        }
+
         config->set_image_count(60);
         config->set_normal_image_count(30);
         config->set_augment_count(30);
