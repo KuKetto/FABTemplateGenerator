@@ -3,15 +3,16 @@
 Image::Image(const bool &is_template):
     is_template(is_template)
 {
-
+    if (is_template) card_positions = new QVector<CardPositionData>();
 }
 
 Image::~Image()
 {
     if (is_image_open) close();
+    else delete card_positions;
 }
 
-void Image::set_file_path(std::string file_path)
+void Image::set_file_path(const std::string &file_path)
 {
     this->file_path = file_path;
 }
@@ -19,8 +20,7 @@ void Image::set_file_path(std::string file_path)
 void Image::open()
 {
     if (file_path == std::string()) {
-        qDebug() << "Can't open the file: You haven't set a file path for the Image class.";
-        return;
+        throw FileNotFound("Image::open", "You haven't provided any file path. Use the Image::set_file_path before calling open.");
     }
 
     if (std::filesystem::path(file_path).extension() == ".zip") {
@@ -33,25 +33,32 @@ void Image::open()
         try {
             image = cv::imread(file_path, cv::IMREAD_COLOR);
             cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-        } catch (...) {
-            qDebug() << "OpenCV image input read exception";
-            return;
+        }
+        catch (const cv::Exception& e) {
+            throw LibraryException("Image::open", "OpenCV", e.what());
+        }
+        catch (const std::exception& e) {
+            // Handle std::exception (OpenCV throws it's own and std exceptions as well.)
+            throw LibraryException("Image::open", "OpenCV", e.what());
         }
     }
 
     is_image_open = true;
 }
 
-void Image::close()
+void Image::close(const bool& destruct)
 {
     if (is_image_open) {
-        if (is_template) delete card_positions;
-        image = cv::Mat();
+        if (is_template) {
+            delete card_positions;
+            if (!destruct) card_positions = new QVector<CardPositionData>();
+        }
+        image = cv::Mat_<unsigned char>(0,0);
         is_image_open = false;
     }
 }
 
-void Image::show()
+void Image::show() const
 {
     cv::imshow("input", image);
     cv::waitKey(0);
@@ -59,8 +66,6 @@ void Image::show()
 
 void Image::load_card_data(nlohmann::json json_data)
 {
-    card_positions = new QVector<CardPositionData>();
-
     for (auto& template_position : json_data) {
         CardPositionData card_data;
 
@@ -77,7 +82,7 @@ void Image::load_card_data(nlohmann::json json_data)
     }
 }
 
-std::vector<cv::Point2f> Image::get_card_positions_perspective(const int &index)
+std::vector<cv::Point2f> Image::get_card_positions_perspective(const int &index) const
 {
     return this->card_positions->value(index).get_perspective_positions();
 }
