@@ -112,7 +112,7 @@ jobs:
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
       - name: Build tests
-        run: cmake --build ${{github.workspace}}/build --target FABTemplateGenerator-Tests --config Release
+        run: cmake --build ${{github.workspace}}/build --target FABTemplateGenerator-Test-Containers --config Release
 
       - name: Build
         # Build your program with the given configuration
