@@ -8,8 +8,10 @@
 #include "../../utils/exceptions/libraryexception.cpp"
 #include "../../utils/zlibcustomimageextractor.h"
 #include "../../utils/zlibcustomimageextractor.cpp"
+#include "../../utils/exceptions/badusageexception.h".h"
+#include "../../utils/exceptions/badusageexception.cpp"
 
-TEST_CASE("Image class", "[Image, FileNotFound, LibraryException]") {
+TEST_CASE("Image class", "[Image, FileNotFound, LibraryException, BadUsageException]") {
     std::string current_file = __FILE__;
     std::filesystem::path current_path(current_file);
     std::filesystem::path examples_dir = current_path.parent_path().parent_path().parent_path() / "examples";
@@ -27,7 +29,7 @@ TEST_CASE("Image class", "[Image, FileNotFound, LibraryException]") {
     }
 
     SECTION("Test setters and getters") {
-        Image* image = new Image();
+        Image* image = new Image(true);
 
         SECTION("Check if file path can be set without exception") {
             REQUIRE_NOTHROW(image->set_file_path(template_path.string()));
@@ -109,6 +111,15 @@ TEST_CASE("Image class", "[Image, FileNotFound, LibraryException]") {
             REQUIRE(invalid_path_image->is_open() == false);
 
             delete invalid_path_image;
+        }
+
+        SECTION("Test open method for bad usage (in case of an image zip file is provided instead of an image)") {
+            Image* bad_usage = new Image();
+
+            bad_usage->set_file_path(template_path.string());
+            REQUIRE_THROWS_AS(bad_usage->open(), BadUsageException);
+
+            delete bad_usage;
         }
     }
 

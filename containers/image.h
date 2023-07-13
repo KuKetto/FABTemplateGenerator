@@ -7,6 +7,7 @@
 #include "cardpositiondata.h"
 #include "../utils/exceptions/filenotfound.h"
 #include "../utils/exceptions/libraryexception.h"
+#include "../utils/exceptions/badusageexception.h"
 
 /**
  * @file CardPositionData.h

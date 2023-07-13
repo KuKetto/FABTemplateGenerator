@@ -9,7 +9,9 @@ Image::Image(const bool &is_template):
 Image::~Image()
 {
     if (is_image_open) close();
-    else delete card_positions;
+    else {
+        if (is_template) delete card_positions;
+    }
 }
 
 void Image::set_file_path(const std::string &file_path)
@@ -21,6 +23,13 @@ void Image::open()
 {
     if (file_path == std::string()) {
         throw FileNotFound("Image::open", "You haven't provided any file path. Use the Image::set_file_path before calling open.");
+    }
+    if (std::filesystem::path(file_path).extension() == ".zip" && !is_template) {
+        throw BadUsageException("Image::open",
+                                "Constructor was set as an image (not as an template) but a template (zip) file path was provided. This could have caused a SEGFAULT",
+                                file_path,
+                                "ZIP Archive",
+                                "Image (JPG / PNG / WEBP / etc...)");
     }
 
     if (std::filesystem::path(file_path).extension() == ".zip") {
