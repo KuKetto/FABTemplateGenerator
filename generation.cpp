@@ -90,7 +90,7 @@ void Generation::generate()
         for (int i = 0; i < selected_inputs.size(); i++) {
             overlay_inputs[i]->close();
             delete overlay_inputs[i];
-            InputDataContainer::PostImageUsedData post_image_used_data = input_data_container->on_image_used(selected_inputs[i], result.input_overlay_positions, result.image_width, result.image_height);
+            InputDataContainer::PostImageUsedData post_image_used_data = input_data_container->on_image_used(selected_inputs[i], result.input_overlay_positions, compressed_image.cols, compressed_image.rows);
             if (post_image_used_data.should_image_be_removed) {
 
                 bool is_image_already_scheduled_for_deletion = false;
