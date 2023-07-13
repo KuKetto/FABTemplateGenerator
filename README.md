@@ -86,7 +86,7 @@ The main useage is extremly simple, we load a template and a number of required 
 - [x] Image labeling
 - [x] Config file to generation rules
 - [x] Automated generation just by running the project
-- [ ] Code optimalization and testing
+- [ ] Code optimalization and testing <- currently under progress
 - [ ] Manual dataset creation:
     - [ ] Templates
     - [ ] YOLO validation dataset - at least 3 images of each invidual card
