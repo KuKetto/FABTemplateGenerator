@@ -20,49 +20,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Cache OpenCV dependencies
-        id: cache-opencv
+      - name: Cache Dependencies
         uses: actions/cache@v3
         with:
           path: |
             /usr/local/include/opencv2
-            /usr/local/lib
-          key: ${{ runner.os }}-opencv-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-opencv-
-    
-      - name: Cache Catch2 dependencies
-        id: cache-catch2
-        uses: actions/cache@v3
-        with:
-          path: |
             /usr/local/include/Catch2
-            /usr/local/lib
-          key: ${{ runner.os }}-catch2-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-catch2-
-      
-      - name: Cache ziplib dependencies
-        id: cache-ziplib
-        uses: actions/cache@v3
-        with:
-          path: |
             /usr/local/include/zip
-            /usr/local/lib
-          key: ${{ runner.os }}-ziplib-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-ziplib-
-            
-      - name: Cache Qt dependencies
-        id: cache-qt
-        uses: actions/cache@v3
-        with:
-          path: |
             /usr/include/qt5
             /usr/lib/x86_64-linux-gnu/qt5
-          key: ${{ runner.os }}-qt-${{ hashFiles('**/CMakeLists.txt') }}
+            /usr/local/lib
+          key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
-            ${{ runner.os }}-qt-
+            ${{ runner.os }}-dependencies-
+
             
       - name: Install Qt dependencies
         run: |
