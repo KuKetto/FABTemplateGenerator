@@ -8,7 +8,7 @@
 #include "../../utils/exceptions/libraryexception.cpp"
 #include "../../utils/zlibcustomimageextractor.h"
 #include "../../utils/zlibcustomimageextractor.cpp"
-#include "../../utils/exceptions/badusageexception.h".h"
+#include "../../utils/exceptions/badusageexception.h"
 #include "../../utils/exceptions/badusageexception.cpp"
 
 TEST_CASE("Image class", "[Image, FileNotFound, LibraryException, BadUsageException]") {
