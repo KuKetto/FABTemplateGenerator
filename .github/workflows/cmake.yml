@@ -18,67 +18,108 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
+
+      - name: Cache OpenCV dependencies
+        id: cache-opencv
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/include/opencv2
+            /usr/local/lib
+          key: ${{ runner.os }}-opencv-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-opencv-
     
-    - name: Install Qt dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y qtbase5-dev qtdeclarative5-dev
+      - name: Cache Catch2 dependencies
+        id: cache-catch2
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/include/Catch2
+            /usr/local/lib
+          key: ${{ runner.os }}-catch2-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-catch2-
+      
+      - name: Cache ziplib dependencies
+        id: cache-ziplib
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/local/include/zip
+            /usr/local/lib
+          key: ${{ runner.os }}-ziplib-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-ziplib-
+            
+      - name: Cache Qt dependencies
+        id: cache-qt
+        uses: actions/cache@v3
+        with:
+          path: |
+            /usr/include/qt5
+            /usr/lib/x86_64-linux-gnu/qt5
+          key: ${{ runner.os }}-qt-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-qt-
+            
+      - name: Install Qt dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qtbase5-dev qtdeclarative5-dev
         
-    - name: Install ziplib
-      run: |
-        sudo apt install -y zlib1g zlib1g-dev
-        wget -O libzip.gz https://libzip.org/download/libzip-1.10.0.tar.gz
-        tar -xvzf libzip.gz
-        cd libzip-1.10.0
-        mkdir build
-        cd build
-        cmake ..
-        make
-        sudo make install
-        cd ../..
+      - name: Install ziplib
+        run: |
+          sudo apt install -y zlib1g zlib1g-dev
+          wget -O libzip.gz https://libzip.org/download/libzip-1.10.0.tar.gz
+          tar -xvzf libzip.gz
+          cd libzip-1.10.0
+          mkdir build
+          cd build
+          cmake ..
+          make
+          sudo make install
+          cd ../..
         
-    - name: Install Catch2
-      run: |
-        git clone https://github.com/catchorg/Catch2.git
-        cd Catch2
-        cmake -Bbuild -H. -DBUILD_TESTING=OFF
-        sudo cmake --build build/ --target install
+      - name: Install Catch2
+        run: |
+          git clone https://github.com/catchorg/Catch2.git
+          cd Catch2
+          cmake -Bbuild -H. -DBUILD_TESTING=OFF
+          sudo cmake --build build/ --target install
         
-    - name: Install OpenCV dependencies
-      run: |
-        sudo apt-get update
-        sudo apt install -y g++ cmake make git libgtk2.0-dev pkg-config
-        wget -O opencv.zip https://github.com/opencv/opencv/archive/4.8.0.zip
-        unzip opencv.zip
-        mkdir -p build && cd build
-        cmake -S ../opencv-4.8.0 -B . -D BUILD_TESTS=False -D BUILD_PERF_TESTS=False
-        cmake --build .
-        sudo make install
-        cd ..
-
+      - name: Install OpenCV dependencies
+        run: |
+          sudo apt-get update
+          sudo apt install -y g++ cmake make git libgtk2.0-dev pkg-config
+          wget -O opencv.zip https://github.com/opencv/opencv/archive/4.8.0.zip
+          unzip opencv.zip
+          mkdir -p build && cd build
+          cmake -S ../opencv-4.8.0 -B . -D BUILD_TESTS=False -D BUILD_PERF_TESTS=False
+          cmake --build .
+          sudo make install
+          cd ..
         
-    - name: Clear cache
-      run: |
-        rm -rf /home/runner/work/FABTemplateGenerator/FABTemplateGenerator/build/CMakeCache.txt
-        rm -rf /home/runner/work/FABTemplateGenerator/FABTemplateGenerator/build/CMakeFiles/
+      - name: Clear cache
+        run: |
+          rm -rf /home/runner/work/FABTemplateGenerator/FABTemplateGenerator/build/CMakeCache.txt
+          rm -rf /home/runner/work/FABTemplateGenerator/FABTemplateGenerator/build/CMakeFiles/
+        
+      - name: Configure CMake
+        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
+      - name: Build tests
+        run: cmake --build ${{github.workspace}}/build --target FABTemplateGenerator-Tests --config Release
 
-    - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      - name: Build
+        # Build your program with the given configuration
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Build tests
-      run: cmake --build ${{github.workspace}}/build --target FABTemplateGenerator-Tests --config Release
-
-    - name: Build
-      # Build your program with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest -C ${{env.BUILD_TYPE}} --extra-verbose --output-on-failure
-
+      - name: Test
+        working-directory: ${{github.workspace}}/build
+        # Execute tests defined by the CMake configuration.
+        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+        run: ctest -C ${{env.BUILD_TYPE}} --extra-verbose --output-on-failure
