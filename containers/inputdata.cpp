@@ -1,7 +1,7 @@
 #include "inputdata.h"
 #include <QDebug>
 
-InputData::InputData(const Config &config, const unsigned int class_id, const std::string class_name):
+InputData::InputData(const Config &config, const unsigned int& class_id, const std::string class_name):
     class_id(class_id), class_name(class_name)
 {
     remaining_image_count = config.get_image_count();
@@ -24,7 +24,7 @@ InputData::InputData(const Config &config, const unsigned int class_id, const st
     init_possible_operation_types_vector(OPERATION_TYPE::RGB_SHIFT, remaining_augment_rgb_shift_count);
 }
 
-void InputData::init_possible_operation_types_vector(unsigned short operation_type, unsigned int operation_type_count)
+void InputData::init_possible_operation_types_vector(const unsigned short& operation_type, const unsigned int& operation_type_count)
 {
     if (operation_type_count > 0)
         possible_operation_types.push_back(operation_type);
@@ -32,7 +32,7 @@ void InputData::init_possible_operation_types_vector(unsigned short operation_ty
 
 unsigned short InputData::use_this_image()
 {
-    if (remaining_image_count < 1) return 65535;
+    if (remaining_image_count < 1) throw InvalidValueException("InputData::use_this_image", "number greater or equal to 1", std::to_string(remaining_image_count));
     remaining_image_count--;
     if (remaining_augmentation_count < 1) return OPERATION_TYPE::NORMAL;
 
