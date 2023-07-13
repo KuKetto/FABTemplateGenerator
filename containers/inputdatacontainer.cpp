@@ -1,7 +1,9 @@
 #include "inputdatacontainer.h"
 
 InputDataContainer::InputDataContainer(const std::string& directory, const Config& config)
-{   
+{
+    if (!std::filesystem::exists(directory) || !std::filesystem::is_directory(directory))
+        throw PathNotFoundException("InputDataContainer::InputDataContainer", directory);
     for (const auto& entry : std::filesystem::directory_iterator(directory))
     {
         if (std::filesystem::path(entry).extension() == ".jpg"
@@ -31,6 +33,8 @@ InputDataContainer::~InputDataContainer()
 
 QPair<Image *, unsigned int> InputDataContainer::select_an_input()
 {
+    if (inputs.empty()) throw NoValidInputsLeftException("InputDataContainer::select_an_input", "there are no input left. Generation finished");
+
     int random = Random::generate_integer(0, inputs.size() - 1);
     QPair<Image*,InputData> random_input = inputs.at(random);
     unsigned int operation;
@@ -40,18 +44,23 @@ QPair<Image *, unsigned int> InputDataContainer::select_an_input()
     } catch (InvalidValueException& ex) {
         qDebug() << ex.what();
         qDebug("this image cannot be used anymore");
-        if (inputs.size() == 1) {
-            throw std::invalid_argument("There was only 1 input with 0 usage left but the template required more than that. The generation will stop now.");
-        } else {
-            qDebug("Trying to brute-force a valid input instead of recursivly applying random");
-            for (auto& input : inputs) {
+    }
+
+    if (inputs.size() == 1) {
+        throw NoValidInputsLeftException("InputDataContainer::select_an_input", "there was only 1 input with 0 usage left but the template required more than that. The generation will stop now.");
+    } else {
+        qDebug("Trying to brute-force a valid input instead of recursivly applying random");
+        for (auto& input : inputs) {
+            try {
                 operation = input.second.use_this_image();
-                if (operation != 65535) return QPair<Image*, unsigned int>(input.first, operation);
+                return QPair<Image*, unsigned int>(input.first, operation);
+            } catch (InvalidValueException& ex) {
+                qDebug() << ex.what();
             }
         }
-
-        throw std::invalid_argument("There were inputs only with 0 usage left but the template required more than that. The generation will stop now.");
     }
+
+    throw NoValidInputsLeftException("InputDataContainer::select_an_input", "there were inputs only with 0 usage left but the template required more than that. The generation will stop now.");
 }
 
 InputDataContainer::PostImageUsedData InputDataContainer::on_image_used(const QPair<Image *, unsigned int> &image, QVector<QPair<std::string, QPair<cv::Point2f, cv::Point2f>>>& boundaries, int image_width, int image_height)
@@ -101,18 +110,22 @@ void InputDataContainer::clean_up_finished_image(const QPair<Image *, unsigned i
             return;
         }
     }
+
+    throw BadUsageException("InputDataContainer::clean_up_finished_image",
+                            "Given image is not inside the inputs QVector, most likely it has been already deleted.");
 }
 
-double InputDataContainer::normalize_value(double value, double normalizing_factor)
+double InputDataContainer::normalize_value(const double& value, const double& normalizing_factor) const
 {
+    if (normalizing_factor == 0) throw DivideByZero("InputDataContainer::normalize_value");
     return value / normalizing_factor;
 }
 
-QPair<QPair<double, double>, QPair<double, double> > InputDataContainer::get_image_normalized_boundaries(QPair<cv::Point2f, cv::Point2f> boundaries, int image_width, int image_height)
+QPair<QPair<double, double>, QPair<double, double> > InputDataContainer::get_image_normalized_boundaries(const QPair<cv::Point2f, cv::Point2f>& boundaries, const int& image_width, const int& image_height) const
 {
     QPair<double, double> boundary_size;
-    boundary_size.first = normalize_value((boundaries.second.x - boundaries.first.x) / 2, image_width);
-    boundary_size.second = normalize_value((boundaries.second.y - boundaries.first.y) / 2, image_height);
+    boundary_size.first = std::abs(normalize_value((boundaries.second.x - boundaries.first.x) / 2, image_width));
+    boundary_size.second = std::abs(normalize_value((boundaries.second.y - boundaries.first.y) / 2, image_height));
 
     QPair<double, double> image_center;
     image_center.first = normalize_value((boundaries.first.x + boundaries.second.x) / 2, image_width);
