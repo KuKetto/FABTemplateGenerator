@@ -2,7 +2,7 @@
 
 PathNotFoundException::PathNotFoundException(const std::string &function, const std::string &file_path)
 {
-    message = "FileNotFound invoked at " + function +
+    message = "PathNotFoundException invoked at " + function +
               ": Path not found. Given path: " + file_path;
 }
 

@@ -43,10 +43,11 @@ add_executable(FABTemplateGenerator
 
   # utils::exceptions
   utils/exceptions/invalidvalueexception.h utils/exceptions/invalidvalueexception.cpp
-  utils/exceptions/filenotfound.h utils/exceptions/filenotfound.cpp
+  utils/exceptions/pathnotfoundexception.h utils/exceptions/pathnotfoundexception.cpp
   utils/exceptions/libraryexception.h utils/exceptions/libraryexception.cpp
   utils/exceptions/badusageexception.h utils/exceptions/badusageexception.cpp
   utils/exceptions/dividebyzero.h utils/exceptions/dividebyzero.cpp
+  utils/exceptions/novalidinputsleftexception.h utils/exceptions/novalidinputsleftexception.cpp
 )
 
 target_link_libraries(FABTemplateGenerator
@@ -67,6 +68,7 @@ add_executable(FABTemplateGenerator-Test-Containers
     tests/containers/test-config.cpp
     tests/containers/test-image.cpp
     tests/containers/test-inputdata.cpp
+    tests/containers/test-inputdatacontainer.cpp
 )
 
 target_link_libraries(FABTemplateGenerator-Test-Containers
