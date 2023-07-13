@@ -32,9 +32,18 @@ jobs:
             /usr/lib/x86_64-linux-gnu/qt5
             /usr/local/lib
           key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
+          
+      - name: Check cache
+        id: check-cache
+        run: |
+          if [[ -d "/usr/local/include/opencv2" ]]; then
+            echo "::set-output name=cache-loaded::true"
+          else
+            echo "::set-output name=cache-loaded::false"
+          fi
             
       - name: Install dependencies
-        if: steps.load-cache.outputs.cache-hit != 'true'
+        if: steps.check-cache.outputs.cache-loaded != 'true'
         run: |
           echo "Cache not found, installing dependencies..."
           
