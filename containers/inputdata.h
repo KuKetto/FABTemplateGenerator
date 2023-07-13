@@ -8,7 +8,7 @@
 #include <QVector>
 
 /**
- * @file CardPositionData.h
+ * @file InputData.h
  *
  * @brief This class is responsible for storing
  * how much operation is left on an image from

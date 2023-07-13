@@ -10,7 +10,7 @@
 #include "../utils/exceptions/badusageexception.h"
 
 /**
- * @file CardPositionData.h
+ * @file Image.h
  *
  * @brief This class is responsible for storing
  * OpenCV image objects and in case of templates

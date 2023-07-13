@@ -4,7 +4,7 @@
 #include "../utils/exceptions/invalidvalueexception.h"
 
 /**
- * @file CardPositionData.h
+ * @file Config.h
  *
  * @brief This class is responsible for storing
  * the config what is used during generation to decide
