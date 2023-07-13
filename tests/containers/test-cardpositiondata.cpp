@@ -5,7 +5,7 @@
 
 TEST_CASE("CardPositionData class", "[CardPositionData]") {
     SECTION("Constructor can be called without any error.") {
-        CardPositionData* card;
+        CardPositionData* card = nullptr;
 
         REQUIRE_NOTHROW(card = new CardPositionData());
 

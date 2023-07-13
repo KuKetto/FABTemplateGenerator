@@ -9,7 +9,7 @@
 
 TEST_CASE("Config class", "[Config, InvalidValueException]") {
     SECTION("Constructor can be called without any error.") {
-        Config* config;
+        Config* config = nullptr;
 
         REQUIRE_NOTHROW(config = new Config());
 
@@ -17,9 +17,7 @@ TEST_CASE("Config class", "[Config, InvalidValueException]") {
     }
 
     SECTION("Setters and Getters are working as expected") {
-        Config* config;
-
-        config = new Config();
+        Config* config = new Config();
 
         SECTION("Check if image count can be set without exception") {
             REQUIRE_NOTHROW(config->set_image_count(60));
@@ -116,9 +114,7 @@ TEST_CASE("Config class", "[Config, InvalidValueException]") {
     }
 
     SECTION("Config validation test with valid input") {
-        Config* config;
-
-        config = new Config();
+        Config* config = new Config();
 
         config->set_image_count(60);
         config->set_normal_image_count(30);
@@ -139,9 +135,7 @@ TEST_CASE("Config class", "[Config, InvalidValueException]") {
 
     SECTION("Config validation test with invalid input. Checking image count.") {
         /* Checking for: image_count - normal_image_count != augment_count */
-        Config* config;
-
-        config = new Config();
+        Config* config = new Config();
 
         config->set_image_count(20);
         config->set_normal_image_count(5);
@@ -170,9 +164,7 @@ TEST_CASE("Config class", "[Config, InvalidValueException]") {
             + augment_rgb_shift != augment_count
         */
 
-        Config* config;
-
-        config = new Config();
+        Config* config = new Config();
 
         config->set_image_count(100);
         config->set_normal_image_count(30);
@@ -219,7 +211,6 @@ TEST_CASE("Config class", "[Config, InvalidValueException]") {
     }
 
     SECTION("Config validation test with the default config.") {
-
         ConfigReader config_reader("Invalid path");
         config_reader.read_config(false);
 

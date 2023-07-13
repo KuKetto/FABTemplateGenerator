@@ -9,7 +9,7 @@
 
 TEST_CASE("InputData class", "[InputData, Config, Random, InvalidValueException]") {
     SECTION("Constructor can be called without any error.") {
-        InputData* input_data;
+        InputData* input_data = nullptr;
 
         REQUIRE_NOTHROW(input_data = new InputData(Config(), 0, ""));
 

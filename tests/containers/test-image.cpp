@@ -3,7 +3,7 @@
 #include "../../containers/image.h"
 #include "../../containers/image.cpp"
 #include "../../utils/exceptions/pathnotfoundexception.h"
-#include "../../utils/exceptions/pathnotfoundexception.h"
+#include "../../utils/exceptions/pathnotfoundexception.cpp"
 #include "../../utils/exceptions/libraryexception.h"
 #include "../../utils/exceptions/libraryexception.cpp"
 #include "../../utils/zlibcustomimageextractor.h"
@@ -19,7 +19,7 @@ TEST_CASE("Image class", "[Image, PathNotFoundException, LibraryException, BadUs
     std::filesystem::path template_path = examples_dir / "templates" / "image4.zip";
 
     SECTION("Constructor can be called without any error.") {
-        Image* image;
+        Image* image = nullptr;
 
         REQUIRE_NOTHROW(image = new Image());
         delete image;
