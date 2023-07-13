@@ -16,16 +16,16 @@
 
 class Config
 {
-    unsigned image_count;
-    unsigned normal_image_count;
-    unsigned augment_count;
-    unsigned augment_noise;
-    unsigned augment_lens_blur;
-    unsigned augment_bilateral_blur;
-    unsigned augment_image_flip;
-    unsigned augment_cut_out;
-    unsigned augment_brightness;
-    unsigned augment_rgb_shift;
+    unsigned image_count = 0;
+    unsigned normal_image_count = 0;
+    unsigned augment_count = 0;
+    unsigned augment_noise = 0;
+    unsigned augment_lens_blur = 0;
+    unsigned augment_bilateral_blur = 0;
+    unsigned augment_image_flip = 0;
+    unsigned augment_cut_out = 0;
+    unsigned augment_brightness = 0;
+    unsigned augment_rgb_shift = 0;
 public:
     /** @brief Creates an empty Config object.
      *  This object stores the loaded config.
