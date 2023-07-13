@@ -2,8 +2,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include "../../containers/image.h"
 #include "../../containers/image.cpp"
-#include "../../utils/exceptions/filenotfound.h"
-#include "../../utils/exceptions/filenotfound.cpp"
+#include "../../utils/exceptions/pathnotfoundexception.h"
+#include "../../utils/exceptions/pathnotfoundexception.h"
 #include "../../utils/exceptions/libraryexception.h"
 #include "../../utils/exceptions/libraryexception.cpp"
 #include "../../utils/zlibcustomimageextractor.h"
@@ -11,7 +11,7 @@
 #include "../../utils/exceptions/badusageexception.h"
 #include "../../utils/exceptions/badusageexception.cpp"
 
-TEST_CASE("Image class", "[Image, FileNotFound, LibraryException, BadUsageException]") {
+TEST_CASE("Image class", "[Image, PathNotFoundException, LibraryException, BadUsageException]") {
     std::string current_file = __FILE__;
     std::filesystem::path current_path(current_file);
     std::filesystem::path examples_dir = current_path.parent_path().parent_path().parent_path() / "examples";
@@ -96,7 +96,7 @@ TEST_CASE("Image class", "[Image, FileNotFound, LibraryException, BadUsageExcept
         SECTION("Test open method for empty file path") {
             Image* empty_file_path_image = new Image();
 
-            REQUIRE_THROWS_AS(empty_file_path_image->open(), FileNotFound);
+            REQUIRE_THROWS_AS(empty_file_path_image->open(), PathNotFoundException);
             REQUIRE(empty_file_path_image->is_open() == false);
 
             delete empty_file_path_image;

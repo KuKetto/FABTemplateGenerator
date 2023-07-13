@@ -5,7 +5,7 @@
 #include <QVector>
 #include "../utils/zlibcustomimageextractor.h"
 #include "cardpositiondata.h"
-#include "../utils/exceptions/filenotfound.h"
+#include "../utils/exceptions/pathnotfoundexception.h"
 #include "../utils/exceptions/libraryexception.h"
 #include "../utils/exceptions/badusageexception.h"
 
@@ -68,7 +68,7 @@ public:
      *  Uses Utils::ZLibCustomImageExtractor to open templates.
      *  Uses cv::imread to open image files.
      *
-     *  @throws Utils::Utils::Exceptions::FileNotFound if the file path is empty
+     *  @throws Utils::Utils::Exceptions::PathNotFoundException if the file path is empty
      *  @throws Utils::Utils::Exceptions::LibraryException if OpenCV fails reading the image
      */
     void open();

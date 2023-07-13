@@ -22,7 +22,7 @@ void Image::set_file_path(const std::string &file_path)
 void Image::open()
 {
     if (file_path == std::string()) {
-        throw FileNotFound("Image::open", "You haven't provided any file path. Use the Image::set_file_path before calling open.");
+        throw PathNotFoundException("Image::open", "You haven't provided any file path. Use the Image::set_file_path before calling open.");
     }
     if (std::filesystem::path(file_path).extension() == ".zip" && !is_template) {
         throw BadUsageException("Image::open",
