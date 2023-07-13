@@ -28,7 +28,7 @@ class CardPositionData
      * @param position: position format stored in CardPositionData
      * @returns an OpenCV cv::Point2f representing a corner of a card
      */
-    cv::Point2f get_cv_point_from_std_pair(std::pair<unsigned int, unsigned int> position);
+    cv::Point2f get_cv_point_from_std_pair(std::pair<unsigned int, unsigned int> position) const;
 public:
     /** @brief Creates an empty CardPositionData object.
      *  This object stores a card's each corner with 4
@@ -87,7 +87,7 @@ public:
      *
      * @returns an std::vector of cv::Point2f which represents each corner of a card
      */
-    std::vector<cv::Point2f> get_perspective_positions();
+    std::vector<cv::Point2f> get_perspective_positions() const;
 };
 
 #endif // CARDPOSITIONDATA_H

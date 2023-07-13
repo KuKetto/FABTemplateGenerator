@@ -1,11 +1,11 @@
 #include "cardpositiondata.h"
 
-cv::Point2f CardPositionData::get_cv_point_from_std_pair(std::pair<unsigned int, unsigned int> position)
+cv::Point2f CardPositionData::get_cv_point_from_std_pair(std::pair<unsigned int, unsigned int> position) const
 {
     return cv::Point2f(position.first, position.second);
 }
 
-std::vector<cv::Point2f> CardPositionData::get_perspective_positions()
+std::vector<cv::Point2f> CardPositionData::get_perspective_positions() const
 {
     std::vector<cv::Point2f> image_perspective_positions;
 
