@@ -45,6 +45,7 @@ add_executable(FABTemplateGenerator
   utils/exceptions/invalidvalueexception.h utils/exceptions/invalidvalueexception.cpp
   utils/exceptions/filenotfound.h utils/exceptions/filenotfound.cpp
   utils/exceptions/libraryexception.h utils/exceptions/libraryexception.cpp
+  utils/exceptions/badusageexception.h utils/exceptions/badusageexception.cpp
 )
 
 target_link_libraries(FABTemplateGenerator
@@ -64,6 +65,7 @@ add_executable(FABTemplateGenerator-Test-Containers
     tests/containers/test-cardpositiondata.cpp
     tests/containers/test-config.cpp
     tests/containers/test-image.cpp
+    tests/containers/test-inputdata.cpp
 )
 
 target_link_libraries(FABTemplateGenerator-Test-Containers
