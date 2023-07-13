@@ -43,6 +43,8 @@ add_executable(FABTemplateGenerator
 
   # utils::exceptions
   utils/exceptions/invalidvalueexception.h utils/exceptions/invalidvalueexception.cpp
+  utils/exceptions/filenotfound.h utils/exceptions/filenotfound.cpp
+  utils/exceptions/libraryexception.h utils/exceptions/libraryexception.cpp
 )
 
 target_link_libraries(FABTemplateGenerator
@@ -52,15 +54,19 @@ target_link_libraries(FABTemplateGenerator
     PkgConfig::LIBZIP
 )
 
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/config.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
+
 include(CTest)
 enable_testing()
 
-add_executable(FABTemplateGenerator-Tests
+add_executable(FABTemplateGenerator-Test-Containers
     tests/containers/test-cardpositiondata.cpp
     tests/containers/test-config.cpp
+    tests/containers/test-image.cpp
 )
 
-target_link_libraries(FABTemplateGenerator-Tests
+target_link_libraries(FABTemplateGenerator-Test-Containers
     Catch2::Catch2WithMain
     ${OpenCV_LIBS}
     Qt${QT_VERSION_MAJOR}::Core
@@ -68,10 +74,7 @@ target_link_libraries(FABTemplateGenerator-Tests
     PkgConfig::LIBZIP
 )
 
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/examples DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/config.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/)
-
-add_test(NAME Test-Containers COMMAND FABTemplateGenerator-Tests)
+add_test(NAME FABTemplateGenerator-Test-Containers COMMAND FABTemplateGenerator-Test-Containers)
 
 install(TARGETS FABTemplateGenerator
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
