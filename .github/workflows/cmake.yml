@@ -32,8 +32,6 @@ jobs:
             /usr/lib/x86_64-linux-gnu/qt5
             /usr/local/lib
           key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-dependencies-
             
       - name: Install dependencies
         if: steps.load-cache.outputs.cache-hit != 'true'
