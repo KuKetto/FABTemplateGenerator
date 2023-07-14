@@ -16,8 +16,13 @@ jobs:
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
+    container:
+      privileged: true
 
     steps:
+      - uses: actions/checkout@v3
+
+      steps:
       - uses: actions/checkout@v3
 
       - name: Load cache
@@ -25,13 +30,22 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            /usr/local/lib/cmake/opencv4/
+            /usr/local/lib/libopencv*
+            /usr/local/lib/cmake/Catch2
+            /usr/local/lib/libCatch2*
+            /usr/local/lib/cmake/libzip
+            /usr/local/lib/libzip*
+            /usr/local/lib/pkgconfig/libzip*
+            /usr/lib/x86_64-linux-gnu/qt5
+            /usr/bin/gzip
             /usr/local/include/opencv2
             /usr/local/include/Catch2
-            /usr/local/include/zip
-            /usr/include/qt5
-            /usr/lib/x86_64-linux-gnu/qt5
-            /usr/local/lib
+            /usr/local/include/zip*
+            /usr/include/x86_64-linux-gnu/qt5
           key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-dependencies-
           
       - name: Check cache
         id: check-cache
