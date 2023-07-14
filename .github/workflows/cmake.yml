@@ -17,34 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Load cache
-        id: load-cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            build/usr/local/lib/cmake/opencv4/
-            build/usr/local/lib/libopencv*
-            build/usr/local/lib/cmake/Catch2
-            build/usr/local/lib/libCatch2*
-            build/usr/local/lib/cmake/libzip
-            build/usr/local/lib/libzip*
-            build/usr/local/lib/pkgconfig/libzip*
-            build/usr/local/include/opencv2
-            build/usr/local/include/Catch2
-            build/usr/local/include/zip*
-          key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-dependencies-
-          
-      - name: Check cache
-        id: check-cache
-        run: |
-          if [[ -d "build/usr/local/include/opencv2" ]]; then
-            echo "::set-output name=cache-loaded::true"
-          else
-            echo "::set-output name=cache-loaded::false"
-          fi
-
       - name: Install package dependencies
         run: |
           # Install Qt dependencies
@@ -55,7 +27,6 @@ jobs:
           sudo apt install -y zlib1g zlib1g-dev
 
       - name: Install CMake dependencies
-        if: steps.check-cache.outputs.cache-loaded != 'true'
         run: |
           echo "Cache not found, installing dependencies..."
 
@@ -65,7 +36,7 @@ jobs:
           cd libzip-1.10.0
           mkdir build
           cd build
-          cmake -DCMAKE_INSTALL_PREFIX=../build ..
+          cmake ..
           make
           make install
           cd ../..
@@ -73,7 +44,7 @@ jobs:
           # Install Catch2
           git clone https://github.com/catchorg/Catch2.git
           cd Catch2
-          cmake -Bbuild -H. -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=../build
+          cmake -Bbuild -H. -DBUILD_TESTING=OFF
           sudo cmake --build build/ --target install
           cd ..
           
@@ -83,7 +54,7 @@ jobs:
           wget -O opencv.zip https://github.com/opencv/opencv/archive/4.8.0.zip
           unzip opencv.zip
           mkdir -p build && cd build
-          cmake -S ../opencv-4.8.0 -B . -D BUILD_TESTS=False -D BUILD_PERF_TESTS=False -DCMAKE_INSTALL_PREFIX=../build
+          cmake -S ../opencv-4.8.0 -B . -D BUILD_TESTS=False -D BUILD_PERF_TESTS=False
           cmake --build .
           make install
           cd ..
