@@ -48,6 +48,7 @@ add_executable(FABTemplateGenerator
   utils/exceptions/badusageexception.h utils/exceptions/badusageexception.cpp
   utils/exceptions/dividebyzero.h utils/exceptions/dividebyzero.cpp
   utils/exceptions/novalidinputsleftexception.h utils/exceptions/novalidinputsleftexception.cpp
+  utils/exceptions/invalidtemplateexception.h utils/exceptions/invalidtemplateexception.cpp
 )
 
 target_link_libraries(FABTemplateGenerator
@@ -69,6 +70,7 @@ add_executable(FABTemplateGenerator-Test-Containers
     tests/containers/test-image.cpp
     tests/containers/test-inputdata.cpp
     tests/containers/test-inputdatacontainer.cpp
+    tests/containers/test-templatecontainer.cpp
 )
 
 target_link_libraries(FABTemplateGenerator-Test-Containers
