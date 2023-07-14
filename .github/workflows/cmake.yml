@@ -25,6 +25,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
+            build/
             /usr/local/lib/cmake/opencv4/
             /usr/local/lib/libopencv*
             /usr/local/lib/cmake/Catch2
@@ -45,11 +46,12 @@ jobs:
       - name: Check cache
         id: check-cache
         run: |
-          if [[ -d "/usr/local/include/opencv2" ]]; then
+          if [[ -d "${{github.workspace}}/build/usr/local/include/opencv2" ]]; then
             echo "::set-output name=cache-loaded::true"
           else
             echo "::set-output name=cache-loaded::false"
           fi
+
             
       - name: Install dependencies
         if: steps.check-cache.outputs.cache-loaded != 'true'
@@ -91,14 +93,12 @@ jobs:
           cd ..
         
       - name: Clear build cache for clean build
-        run: |
-          rm -rf /home/runner/work/FABTemplateGenerator/FABTemplateGenerator/build/CMakeCache.txt
-          rm -rf /home/runner/work/FABTemplateGenerator/FABTemplateGenerator/build/CMakeFiles/
+        run: rm -rf ${{github.workspace}}/build/CMakeCache.txt
         
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_PREFIX_PATH=${{github.workspace}}/build
 
       - name: Build tests
         run: cmake --build ${{github.workspace}}/build --target FABTemplateGenerator-Test-Containers --config Release
