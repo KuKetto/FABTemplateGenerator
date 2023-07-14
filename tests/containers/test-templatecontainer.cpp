@@ -3,10 +3,11 @@
 #include "../../containers/templatecontainer.h"
 #include "../../containers/templatecontainer.cpp"
 #include "../../utils/exceptions/novalidinputsleftexception.h"
+#include "../../utils/exceptions/badusageexception.h"
 #include "../../utils/exceptions/invalidtemplateexception.h"
 #include "../../utils/exceptions/invalidtemplateexception.cpp"
 
-TEST_CASE("TemplateContainer class", "[TemplateContainer]") {
+TEST_CASE("TemplateContainer class", "[TemplateContainer, PathNotFoundException, NoValidInputsLeftException, BadUsageException]") {
     std::string current_file = __FILE__;
     std::filesystem::path current_path(current_file);
     std::filesystem::path templates_dir = current_path.parent_path().parent_path().parent_path() / "examples/templates";
@@ -84,7 +85,7 @@ TEST_CASE("TemplateContainer class", "[TemplateContainer]") {
 
             TemplateContainer* no_valid_input_template_container = new TemplateContainer(".", number_of_images);
 
-            REQUIRE_THROWS_AS(template_container->on_image_deleted(), BadUsageException);
+            REQUIRE_THROWS_AS(no_valid_input_template_container->on_image_deleted(), BadUsageException);
 
             delete no_valid_input_template_container;
         }
