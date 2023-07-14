@@ -12,9 +12,6 @@ env:
 
 jobs:
   build:
-    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
-    # You can convert this to a matrix build if you need cross-platform coverage.
-    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: ubuntu-latest
 
     steps:
@@ -25,20 +22,16 @@ jobs:
         uses: actions/cache@v3
         with:
           path: |
-            build/
-            /usr/local/lib/cmake/opencv4/
-            /usr/local/lib/libopencv*
-            /usr/local/lib/cmake/Catch2
-            /usr/local/lib/libCatch2*
-            /usr/local/lib/cmake/libzip
-            /usr/local/lib/libzip*
-            /usr/local/lib/pkgconfig/libzip*
-            /usr/lib/x86_64-linux-gnu/qt5
-            /usr/bin/gzip
-            /usr/local/include/opencv2
-            /usr/local/include/Catch2
-            /usr/local/include/zip*
-            /usr/include/x86_64-linux-gnu/qt5
+            build/usr/local/lib/cmake/opencv4/
+            build/usr/local/lib/libopencv*
+            build/usr/local/lib/cmake/Catch2
+            build/usr/local/lib/libCatch2*
+            build/usr/local/lib/cmake/libzip
+            build/usr/local/lib/libzip*
+            build/usr/local/lib/pkgconfig/libzip*
+            build/usr/local/include/opencv2
+            build/usr/local/include/Catch2
+            build/usr/local/include/zip*
           key: ${{ runner.os }}-dependencies-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
             ${{ runner.os }}-dependencies-
@@ -46,38 +39,41 @@ jobs:
       - name: Check cache
         id: check-cache
         run: |
-          if [[ -d "${{github.workspace}}/build/usr/local/include/opencv2" ]]; then
+          if [[ -d "build/usr/local/include/opencv2" ]]; then
             echo "::set-output name=cache-loaded::true"
           else
             echo "::set-output name=cache-loaded::false"
           fi
 
-            
-      - name: Install dependencies
-        if: steps.check-cache.outputs.cache-loaded != 'true'
+      - name: Install package dependencies
         run: |
-          echo "Cache not found, installing dependencies..."
-          
           # Install Qt dependencies
           sudo apt-get update
           sudo apt-get install -y qtbase5-dev qtdeclarative5-dev
-          
-          # Install ziplib
+
+          # Install Gzip dependencies
           sudo apt install -y zlib1g zlib1g-dev
+
+      - name: Install CMake dependencies
+        if: steps.check-cache.outputs.cache-loaded != 'true'
+        run: |
+          echo "Cache not found, installing dependencies..."
+
+          # Install ziplib
           wget -O libzip.gz https://libzip.org/download/libzip-1.10.0.tar.gz
           tar -xvzf libzip.gz
           cd libzip-1.10.0
           mkdir build
           cd build
-          cmake ..
+          cmake -DCMAKE_INSTALL_PREFIX=../build ..
           make
-          sudo make install
+          make install
           cd ../..
           
           # Install Catch2
           git clone https://github.com/catchorg/Catch2.git
           cd Catch2
-          cmake -Bbuild -H. -DBUILD_TESTING=OFF
+          cmake -Bbuild -H. -DBUILD_TESTING=OFF -DCMAKE_INSTALL_PREFIX=../build
           sudo cmake --build build/ --target install
           cd ..
           
@@ -87,28 +83,23 @@ jobs:
           wget -O opencv.zip https://github.com/opencv/opencv/archive/4.8.0.zip
           unzip opencv.zip
           mkdir -p build && cd build
-          cmake -S ../opencv-4.8.0 -B . -D BUILD_TESTS=False -D BUILD_PERF_TESTS=False
+          cmake -S ../opencv-4.8.0 -B . -D BUILD_TESTS=False -D BUILD_PERF_TESTS=False -DCMAKE_INSTALL_PREFIX=../build
           cmake --build .
-          sudo make install
+          make install
           cd ..
         
       - name: Clear build cache for clean build
-        run: rm -rf ${{github.workspace}}/build/CMakeCache.txt
+        run: rm -rf build/CMakeCache.txt
         
       - name: Configure CMake
-        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_PREFIX_PATH=${{github.workspace}}/build
+        run: cmake -B build -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DCMAKE_PREFIX_PATH=${{ github.workspace }}/build
 
       - name: Build tests
-        run: cmake --build ${{github.workspace}}/build --target FABTemplateGenerator-Test-Containers --config Release
+        run: cmake --build build --target FABTemplateGenerator-Test-Containers --config Release
 
       - name: Build
-        # Build your program with the given configuration
-        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        run: cmake --build build --config ${{ env.BUILD_TYPE }}
 
       - name: Test
-        working-directory: ${{github.workspace}}/build
-        # Execute tests defined by the CMake configuration.
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest -C ${{env.BUILD_TYPE}} --extra-verbose --output-on-failure
+        working-directory: build
+        run: ctest -C ${{ env.BUILD_TYPE }} --extra-verbose --output-on-failure
