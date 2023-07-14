@@ -8,7 +8,7 @@ Image::Image(const bool &is_template):
 
 Image::~Image()
 {
-    if (is_image_open) close();
+    if (is_image_open) close(true);
     else {
         if (is_template) delete card_positions;
     }
@@ -57,14 +57,14 @@ void Image::open()
 
 void Image::close(const bool& destruct)
 {
-    if (is_image_open) {
-        if (is_template) {
-            delete card_positions;
-            if (!destruct) card_positions = new QVector<CardPositionData>();
-        }
-        image = cv::Mat_<unsigned char>(0,0);
-        is_image_open = false;
+    if (!is_image_open) return;
+    if (is_template) {
+        delete card_positions;
+        if (!destruct) card_positions = new QVector<CardPositionData>();
+        else card_positions = nullptr;
     }
+    image = cv::Mat_<unsigned char>(0,0);
+    is_image_open = false;
 }
 
 void Image::show() const
