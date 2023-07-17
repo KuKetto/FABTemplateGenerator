@@ -8,8 +8,9 @@
 #include "../utils/exceptions/badusageexception.h"
 
 /**
- * @file TemplateContainer.h
+ * @file templatecontainer.h
  *
+ * @class TemplateContainer
  * @brief This class is responsible for storing
  * how much operation is left on an image from
  * a given type.

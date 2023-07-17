@@ -9,8 +9,9 @@
 #include "../utils/exceptions/badusageexception.h"
 
 /**
- * @file InputDataContainer.h
+ * @file inputdatacontainer.h
  *
+ * @class InputDataContainer
  * @brief This class is responsible for storing
  * how much operation is left on an image from
  * a given type.

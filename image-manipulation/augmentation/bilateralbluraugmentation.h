@@ -4,8 +4,9 @@
 #include "augmentation.h"
 
 /**
- * @file BilateralBlurAugmentation.h
+ * @file bilateralbluraugmentation.h
  *
+ * @class BilateralBlurAugmentation
  * @brief This class augments images with
  * Bilateral blur
  *

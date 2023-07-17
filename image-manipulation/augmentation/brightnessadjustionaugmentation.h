@@ -4,8 +4,9 @@
 #include "augmentation.h"
 
 /**
- * @file BrightnessAdjustionAugmentation.h
+ * @file brightnessadjustionaugmentation.h
  *
+ * @class BrightnessAdjustionAugmentation
  * @brief This class augments images by
  * adjusting their brightness.
  *

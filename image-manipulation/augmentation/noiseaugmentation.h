@@ -4,8 +4,9 @@
 #include "augmentation.h"
 
 /**
- * @file NoiseAugmentation.h
+ * @file noiseaugmentation.h
  *
+ * @class NoiseAugmentation
  * @brief This class augments images with
  * Gaussian noise
  *

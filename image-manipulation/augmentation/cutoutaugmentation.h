@@ -4,8 +4,9 @@
 #include "augmentation.h"
 
 /**
- * @file CutOutAugmentation.h
+ * @file cutoutaugmentation.h
  *
+ * @class CutOutAugmentation
  * @brief This class augments images by
  * cutting out and inpainting triangular
  * or rectangular regions.

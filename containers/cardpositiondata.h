@@ -5,8 +5,9 @@
 #include <opencv2/core.hpp>
 
 /**
- * @file CardPositionData.h
+ * @file cardpositiondata.h
  *
+ * @class CardPositionData
  * @brief This class is responsible for storing
  * card positions in the template image.
  *

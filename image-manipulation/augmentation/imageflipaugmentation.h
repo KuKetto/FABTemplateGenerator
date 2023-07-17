@@ -4,8 +4,9 @@
 #include "augmentation.h"
 
 /**
- * @file ImageFlipAugmentation.h
+ * @file imageflipaugmentation.h
  *
+ * @class ImageFlipAugmentation
  * @brief This class augments images by
  * flipping them.
  *

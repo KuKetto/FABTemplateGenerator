@@ -8,8 +8,9 @@
 #include <QVector>
 
 /**
- * @file InputData.h
+ * @file inputdata.h
  *
+ * @class InputData
  * @brief This class is responsible for storing
  * how much operation is left on an image from
  * a given type.
@@ -18,7 +19,9 @@
  *
  */
 
-/** @brief An enum containting a number for operation types,
+/**
+ *  @enum OPERATION_TYPE
+ *  @brief An enum containting a number for operation types,
  *  used inside switches.
  */
 enum OPERATION_TYPE{

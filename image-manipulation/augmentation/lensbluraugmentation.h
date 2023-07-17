@@ -4,8 +4,9 @@
 #include "augmentation.h"
 
 /**
- * @file LensBlurAugmentation.h
+ * @file lensbluraugmentation.h
  *
+ * @class LensBlurAugmentation
  * @brief This class augments images with
  * Gaussian (lens) blur
  *

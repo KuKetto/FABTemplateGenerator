@@ -4,8 +4,9 @@
 #include "../utils/exceptions/invalidvalueexception.h"
 
 /**
- * @file Config.h
+ * @file config.h
  *
+ * @class Config
  * @brief This class is responsible for storing
  * the config what is used during generation to decide
  * how much image should be generated.

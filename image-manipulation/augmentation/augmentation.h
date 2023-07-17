@@ -7,8 +7,9 @@
 #include "../../utils/exceptions/invalidvalueexception.h"
 
 /**
- * @file Augmentation.h
+ * @file augmentation.h
  *
+ * @class Augmentation
  * @brief This is an abstract class for image
  * augmentations.
  * For more about advanced image augmentation

@@ -4,8 +4,9 @@
 #include "augmentation.h"
 
 /**
- * @file RGBShiftAugmentation.h
+ * @file rgbshiftaugmentation.h
  *
+ * @class RGBShiftAugmentation
  * @brief This class augments images by
  * shifting their rgb values.
  *
