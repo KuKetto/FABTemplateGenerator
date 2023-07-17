@@ -104,6 +104,7 @@ target_link_libraries(FABTemplateGenerator-Test-ImageManipulations
 )
 
 add_test(NAME FABTemplateGenerator-Test-Containers COMMAND FABTemplateGenerator-Test-Containers)
+add_test(NAME FABTemplateGenerator-Test-ImageManipulations COMMAND FABTemplateGenerator-Test-ImageManipulations)
 
 install(TARGETS FABTemplateGenerator
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
