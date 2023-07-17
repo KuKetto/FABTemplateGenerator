@@ -4,9 +4,9 @@
 #include "containers/inputdatacontainer.h"
 #include "containers/templatecontainer.h"
 #include "containers/config.h"
-#include "utils/configreader.h"
 #include "image-manipulation/imageoverlay.h"
-#include "image-manipulation/augmentation.h"
+#include "utils/configreader.h"
+#include "utils/augmentationfactory.h"
 #include <chrono>
 
 class Generation

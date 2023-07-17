@@ -36,7 +36,6 @@ void Generation::generate()
         Image* template_image = template_container->select_a_template();
         template_image->open();
 
-        Augmentation augmentation;
         ImageOverlay overlay;
         QVector<Image*> overlay_inputs;
         QVector<QPair<Image *, unsigned int>> selected_inputs;
@@ -48,31 +47,10 @@ void Generation::generate()
             overlay_input->set_file_path(selected_input.first->get_file_path());
             overlay_input->open();
 
-            switch (selected_input.second) {
-            case OPERATION_TYPE::NOISE:
-                augmentation.apply_noise(overlay_input, Random::generate_double(30, 45));
-                break;
-            case OPERATION_TYPE::LENS_BLUR:
-                augmentation.apply_lens_blur(overlay_input, Random::generate_double(1, 3));
-                break;
-            case OPERATION_TYPE::BILATERAL_BLUR:
-                augmentation.apply_bilateral_blur(overlay_input, Random::generate_integer(15, 50), Random::generate_integer(80, 220), Random::generate_integer(35, 70));
-                break;
-            case OPERATION_TYPE::IMAGE_FLIP:
-                augmentation.flip_image(overlay_input);
-                break;
-            case OPERATION_TYPE::CUT_OUT:
-                augmentation.cut_out_image(overlay_input, Random::generate_integer(4, 12));
-                break;
-            case OPERATION_TYPE::BRIGHTNESS_ADJUSTION:
-                augmentation.adjust_brightness(overlay_input, Random::generate_double(0.75, 1.25));
-                break;
-            case OPERATION_TYPE::RGB_SHIFT:
-                augmentation.shift_rgb(overlay_input, Random::generate_double(0.9, 1.1), Random::generate_double(0.9, 1.1), Random::generate_double(0.9, 1.1));
-                break;
-            default:
-                break;
-            }
+            AugmentationFactory augmentation_factory(selected_input.second, overlay_input);
+            Augmentation* augmentation = augmentation_factory.getAugmentation();
+            if (augmentation != nullptr) augmentation->augment();
+            delete augmentation;
 
             selected_inputs.push_back(selected_input);
             overlay_inputs.push_back(overlay_input);
