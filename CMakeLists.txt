@@ -29,9 +29,18 @@ add_executable(FABTemplateGenerator
   containers/templatecontainer.h containers/templatecontainer.cpp
   containers/inputdatacontainer.h containers/inputdatacontainer.cpp
 
-  # image manipulation
+  # image-manipulation
   image-manipulation/imageoverlay.h image-manipulation/imageoverlay.cpp
-  image-manipulation/augmentation.h image-manipulation/augmentation.cpp
+
+  # image-manipulation::augmentation
+  image-manipulation/augmentation/augmentation.h
+  image-manipulation/augmentation/noiseaugmentation.h image-manipulation/augmentation/noiseaugmentation.cpp
+  image-manipulation/augmentation/lensbluraugmentation.h image-manipulation/augmentation/lensbluraugmentation.cpp
+  image-manipulation/augmentation/bilateralbluraugmentation.h image-manipulation/augmentation/bilateralbluraugmentation.cpp
+  image-manipulation/augmentation/imageflipaugmentation.h image-manipulation/augmentation/imageflipaugmentation.cpp
+  image-manipulation/augmentation/cutoutaugmentation.h image-manipulation/augmentation/cutoutaugmentation.cpp
+  image-manipulation/augmentation/brightnessadjustionaugmentation.h image-manipulation/augmentation/brightnessadjustionaugmentation.cpp
+  image-manipulation/augmentation/rgbshiftaugmentation.h image-manipulation/augmentation/rgbshiftaugmentation.cpp
 
   # json
   nlohmann-json/json.hpp
@@ -40,6 +49,7 @@ add_executable(FABTemplateGenerator
   utils/zlibcustomimageextractor.h utils/zlibcustomimageextractor.cpp
   utils/random.h utils/random.cpp
   utils/configreader.h utils/configreader.cpp
+  utils/augmentationfactory.h utils/augmentationfactory.cpp
 
   # utils::exceptions
   utils/exceptions/invalidvalueexception.h utils/exceptions/invalidvalueexception.cpp
@@ -73,7 +83,19 @@ add_executable(FABTemplateGenerator-Test-Containers
     tests/containers/test-templatecontainer.cpp
 )
 
+add_executable(FABTemplateGenerator-Test-ImageManipulations
+    tests/image-manipulation/augmentation/test-augmentation.cpp
+)
+
 target_link_libraries(FABTemplateGenerator-Test-Containers
+    Catch2::Catch2WithMain
+    ${OpenCV_LIBS}
+    Qt${QT_VERSION_MAJOR}::Core
+    ZLIB::ZLIB
+    PkgConfig::LIBZIP
+)
+
+target_link_libraries(FABTemplateGenerator-Test-ImageManipulations
     Catch2::Catch2WithMain
     ${OpenCV_LIBS}
     Qt${QT_VERSION_MAJOR}::Core
