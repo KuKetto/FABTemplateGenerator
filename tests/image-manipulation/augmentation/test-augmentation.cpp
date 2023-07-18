@@ -172,23 +172,34 @@ TEST_CASE("BilateralBlurAugmentation class", "[BilateralBlurAugmentation]") {
         bilateral_blur_augmented_image->set_file_path(get_example_image_path());
         bilateral_blur_augmented_image->open();
 
-        // Set the radius 3 and match it to the control image
+        // Set the diameter to 35, the sigma color to 150 and the sigma space to 60 then match it to the control image
         REQUIRE_NOTHROW(bilateral_blur_augmentation = new BilateralBlurAugmentation(bilateral_blur_augmented_image, 35, 150, 60));
         REQUIRE_NOTHROW(bilateral_blur_augmentation->augment());
 
-        bool mismatch_found = false;
-        for (int i = 0; i < control_image->get_opencv_image_object().rows; i++)
-            for (int j = 0; j < control_image->get_opencv_image_object().cols; j++) {
-                if (control_image->get_opencv_image_object().at<uchar>(i,j)
-                    != bilateral_blur_augmented_image->get_opencv_image_object().at<uchar>(i,j))
-                {
-                    mismatch_found = true;
-                    break;
+        /**
+         * @test TEMPORARY
+         * TODO: Remove this temporary debugging section
+         *
+         * Debugging: Bilateral blur image data, the following section on github actions fails
+        */
+        SECTION("Temporary debug section") {
+            bool mismatch_found = false;
+            for (int i = 0; i < control_image->get_opencv_image_object().rows; i++)
+                for (int j = 0; j < control_image->get_opencv_image_object().cols; j++) {
+                    if (control_image->get_opencv_image_object().at<uchar>(i,j)
+                        != bilateral_blur_augmented_image->get_opencv_image_object().at<uchar>(i,j))
+                    {
+                        qDebug() << "Mismatch found on pixel (" << i << ", " << j << ") as the value of the control image ("
+                                 << control_image->get_opencv_image_object().at<uchar>(i,j) << ") does not match to the result ("
+                                 << bilateral_blur_augmented_image->get_opencv_image_object().at<uchar>(i,j) << ")";
+                        mismatch_found = true;
+                        break;
+                    }
+                    if (mismatch_found) break;
                 }
-                if (mismatch_found) break;
-            }
 
-        REQUIRE_FALSE(mismatch_found);
+            REQUIRE_FALSE(mismatch_found);
+        }
 
         bilateral_blur_augmented_image->close();
         control_image->close();
@@ -220,7 +231,6 @@ TEST_CASE("ImageFlipAugmentation class", "[ImageFlipAugmentation]") {
         image_flipped_augmented_image->set_file_path(get_example_image_path());
         image_flipped_augmented_image->open();
 
-        // Set the radius 3 and match it to the control image
         REQUIRE_NOTHROW(image_flip_augmentation = new ImageFlipAugmentation(image_flipped_augmented_image));
         REQUIRE_NOTHROW(image_flip_augmentation->augment());
 
@@ -268,7 +278,6 @@ TEST_CASE("CutOutAugmentation class", "[CutOutAugmentation]") {
         cut_out_augmented_image->set_file_path(get_example_image_path());
         cut_out_augmented_image->open();
 
-        // Set the factor variable way to high and try to find a pixel which does not match by the noise
         REQUIRE_NOTHROW(cut_out_augmentation = new CutOutAugmentation(cut_out_augmented_image, 8));
         REQUIRE_NOTHROW(cut_out_augmentation->augment());
 
@@ -317,7 +326,7 @@ TEST_CASE("BrightnessAdjustionAugmentation class", "[BrightnessAdjustionAugmenta
         brightness_adjusted_augmented_image->set_file_path(get_example_image_path());
         brightness_adjusted_augmented_image->open();
 
-        // Set the radius 3 and match it to the control image
+        // Set the brightness constant to 1.3 and match it to the control image
         REQUIRE_NOTHROW(brightness_adjustion_augmentation = new BrightnessAdjustionAugmentation(brightness_adjusted_augmented_image, 1.3));
         REQUIRE_NOTHROW(brightness_adjustion_augmentation->augment());
 
@@ -389,7 +398,7 @@ TEST_CASE("RGBShiftAugmentation class", "[RGBShiftAugmentation, InvalidValueExce
         rgb_shift_augmented_image->set_file_path(get_example_image_path());
         rgb_shift_augmented_image->open();
 
-        // Set the radius 3 and match it to the control image
+        // Set the red constant to 1.05, the green constant to 1.1 and the blue constant to 0.92 then match it to the control image
         REQUIRE_NOTHROW(rgb_shift_augmentation = new RGBShiftAugmentation(rgb_shift_augmented_image, 1.05, 1.1, 0.92));
         REQUIRE_NOTHROW(rgb_shift_augmentation->augment());
 
