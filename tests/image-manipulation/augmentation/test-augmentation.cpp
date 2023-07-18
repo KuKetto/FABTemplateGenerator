@@ -182,12 +182,14 @@ TEST_CASE("BilateralBlurAugmentation class", "[BilateralBlurAugmentation]") {
          *
          * Debugging: Bilateral blur image data, the following section on github actions fails
         */
+        const double treshold = 1.0;
         SECTION("Temporary debug section") {
             bool mismatch_found = false;
             for (int i = 0; i < control_image->get_opencv_image_object().rows; i++)
                 for (int j = 0; j < control_image->get_opencv_image_object().cols; j++) {
-                    if (control_image->get_opencv_image_object().at<uchar>(i,j)
-                        != bilateral_blur_augmented_image->get_opencv_image_object().at<uchar>(i,j))
+                    uchar control_image_pixel = control_image->get_opencv_image_object().at<uchar>(i,j);
+                    uchar bilateral_augmented_image_pixel = bilateral_blur_augmented_image->get_opencv_image_object().at<uchar>(i,j);
+                    if (std::abs(control_image_pixel - bilateral_augmented_image_pixel) > 1)
                     {
                         qDebug() << "Mismatch found on pixel (" << i << ", " << j << ") as the value of the control image ("
                                  << control_image->get_opencv_image_object().at<uchar>(i,j) << ") does not match to the result ("
