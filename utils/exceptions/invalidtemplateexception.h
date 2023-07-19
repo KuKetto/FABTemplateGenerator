@@ -8,7 +8,7 @@ class InvalidTemplateException : std::exception
     std::string message;
 public:
     InvalidTemplateException(const std::string& function,
-                             const std::string& image_reading_exception);
+                             const std::string& reason);
 
     const char* what() const noexcept override;
 };

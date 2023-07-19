@@ -1,8 +1,8 @@
 #include "invalidtemplateexception.h"
 
-InvalidTemplateException::InvalidTemplateException(const std::string &function, const std::string &image_reading_exception)
+InvalidTemplateException::InvalidTemplateException(const std::string &function, const std::string &reason)
 {
-    message = "In the function: " + function + " exception happened. " + image_reading_exception;
+    message = "InvalidTemplateException invoked at: " + function + " - reason: " + reason;
 }
 
 const char *InvalidTemplateException::what() const noexcept
