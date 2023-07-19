@@ -85,6 +85,7 @@ add_executable(FABTemplateGenerator-Test-Containers
 
 add_executable(FABTemplateGenerator-Test-ImageManipulations
     tests/image-manipulation/augmentation/test-augmentation.cpp
+    tests/image-manipulation/test-imageoverlay.cpp
 )
 
 target_link_libraries(FABTemplateGenerator-Test-Containers
