@@ -9,6 +9,10 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Add the coverage flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core)
 find_package( OpenCV REQUIRED )
@@ -106,6 +110,16 @@ target_link_libraries(FABTemplateGenerator-Test-ImageManipulations
 
 add_test(NAME FABTemplateGenerator-Test-Containers COMMAND FABTemplateGenerator-Test-Containers)
 add_test(NAME FABTemplateGenerator-Test-ImageManipulations COMMAND FABTemplateGenerator-Test-ImageManipulations)
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    include(${CMAKE_SOURCE_DIR}/CodeCoverage.cmake)
+    setup_target_for_coverage_gcovr_html(
+        NAME coverage
+        EXECUTABLE FABTemplateGenerator
+        EXCLUDE "${CMAKE_SOURCE_DIR}/nlohmann-json"
+        EXCLUDE "${CMAKE_SOURCE_DIR}/tests"
+    )
+endif()
 
 install(TARGETS FABTemplateGenerator
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
