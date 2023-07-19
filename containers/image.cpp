@@ -73,6 +73,12 @@ void Image::show() const
     cv::waitKey(0);
 }
 
+unsigned int Image::get_card_positions_size() const
+{
+    if (is_template) return card_positions->size();
+    throw BadUsageException("Image::get_card_positions_size()", "Method was called not on a template image, make sure in the constructor a boolean was provided");
+}
+
 void Image::load_card_data(nlohmann::json json_data)
 {
     for (auto& template_position : json_data) {
@@ -93,5 +99,6 @@ void Image::load_card_data(nlohmann::json json_data)
 
 std::vector<cv::Point2f> Image::get_card_positions_perspective(const int &index) const
 {
-    return this->card_positions->value(index).get_perspective_positions();
+    if (is_template) return this->card_positions->value(index).get_perspective_positions();
+    throw BadUsageException("Image::get_card_positions_size()", "Method was called not on a template image, make sure in the constructor a boolean was provided");
 }

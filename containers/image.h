@@ -101,8 +101,11 @@ public:
      */
     std::string get_file_path() const {return file_path;}
 
-    /** @brief Returns the size of the card_positions vector*/
-    unsigned int get_card_positions_size() const {return card_positions->size();}
+    /** @brief Returns the size of the card_positions vector
+     *  @throws Utils::Exceptions::BadUsageException if the
+     *  method was called not on a template image
+     */
+    unsigned int get_card_positions_size() const;
 
     /** @brief Returns the read OpenCV image cv::Mat object*/
     cv::Mat get_opencv_image_object() const {return image;}
@@ -119,6 +122,9 @@ public:
      *  For more, see: Containers::CardPositionData::get_perspective_positions
      *
      *  @param index: new OpenCV cv::Mat object to overwrite the current one
+     *
+     *  @throws Utils::Exceptions::BadUsageException if the method was called not
+     *  on a template image
      */
     std::vector<cv::Point2f> get_card_positions_perspective(const int& index) const;
 };
