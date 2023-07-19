@@ -60,6 +60,13 @@ TEST_CASE("Image class", "[Image, PathNotFoundException, LibraryException, BadUs
             image->close();
         }
 
+        SECTION("Check if BadUsageException is thrown if position getters was called not on a template image") {
+            Image* input_image = new Image(false);
+            REQUIRE_THROWS_AS(input_image->get_card_positions_size(), BadUsageException);
+            REQUIRE_THROWS_AS(input_image->get_card_positions_perspective(2), BadUsageException);
+            delete input_image;
+        }
+
         delete image;
     }
 
