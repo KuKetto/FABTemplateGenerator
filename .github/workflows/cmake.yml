@@ -25,6 +25,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y qtbase5-dev qtdeclarative5-dev
         
+    - name: Install gcovr dependency
+      run: |
+        sudo apt-get install -y gcovr
+        
     - name: Install ziplib
       run: |
         sudo apt install -y zlib1g zlib1g-dev
