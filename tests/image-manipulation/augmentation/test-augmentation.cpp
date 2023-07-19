@@ -100,16 +100,21 @@ bool check_random_based_augmentation(const unsigned int& operation_type) {
 
     // Hence the randomness of the method this can't really be tested in a different way
     bool mismatch_found = false;
-    for (int i = 0; i < input_image->get_opencv_image_object().rows; i++)
+    for (int i = 0; i < input_image->get_opencv_image_object().rows; i++) {
         for (int j = 0; j < input_image->get_opencv_image_object().cols; j++) {
-            if (input_image->get_opencv_image_object().at<uchar>(i,j)
-                != augmented_image->get_opencv_image_object().at<uchar>(i,j))
-            {
-                mismatch_found = true;
-                break;
+            cv::Vec3b control_image_pixels = input_image->get_opencv_image_object().at<cv::Vec3b>(i,j);
+            cv::Vec3b augmented_image_pixels = augmented_image->get_opencv_image_object().at<cv::Vec3b>(i,j);
+            for (int k = 0; k < 3; k++) {
+                if (control_image_pixels[k] != augmented_image_pixels[k])
+                {
+                    mismatch_found = true;
+                    break;
+                }
             }
             if (mismatch_found) break;
         }
+        if (mismatch_found) break;
+    }
 
     augmented_image->close();
     input_image->close();
@@ -139,17 +144,21 @@ bool check_pixel_matching_based_augmentation(const unsigned int& operation_type,
 
     const double treshold = 1.0;
     bool mismatch_found = false;
-    for (int i = 0; i < control_image->get_opencv_image_object().rows; i++)
+    for (int i = 0; i < control_image->get_opencv_image_object().rows; i++) {
         for (int j = 0; j < control_image->get_opencv_image_object().cols; j++) {
-            uchar control_image_pixel = control_image->get_opencv_image_object().at<uchar>(i,j);
-            uchar augmented_image_pixel = augmented_image->get_opencv_image_object().at<uchar>(i,j);
-            if (std::abs(control_image_pixel - augmented_image_pixel) > treshold)
-            {
-                mismatch_found = true;
-                break;
+            cv::Vec3b control_image_pixels = control_image->get_opencv_image_object().at<cv::Vec3b>(i,j);
+            cv::Vec3b augmented_image_pixels = augmented_image->get_opencv_image_object().at<cv::Vec3b>(i,j);
+            for (int k = 0; k < 3; k++) {
+                if (std::abs(control_image_pixels[k] - augmented_image_pixels[k]) > treshold)
+                {
+                    mismatch_found = true;
+                    break;
+                }
             }
             if (mismatch_found) break;
         }
+        if (mismatch_found) break;
+    }
 
     augmented_image->close();
     control_image->close();
