@@ -1,20 +1,20 @@
 #define CATCH_CONFIG_MAIN
 #include <catch2/catch_test_macros.hpp>
 
-#include "../../../image-manipulation/imageoverlay.h"
-#include "../../../image-manipulation/imageoverlay.cpp"
+#include "../../image-manipulation/imageoverlay.h"
+#include "../../image-manipulation/imageoverlay.cpp"
 
-#include "../../../containers/image.h"
+#include "../../containers/image.h"
 
-#include "../../../utils/exceptions/badusageexception.h"
-#include "../../../utils/exceptions/invalidvalueexception.h"
-#include "../../../utils/exceptions/invalidtemplateexception.h"
-#include "../../../utils/exceptions/invalidtemplateexception.cpp"
+#include "../../utils/exceptions/badusageexception.h"
+#include "../../utils/exceptions/invalidvalueexception.h"
+#include "../../utils/exceptions/invalidtemplateexception.h"
+#include "../../utils/exceptions/invalidtemplateexception.cpp"
 
 std::string get_example_template_path() {
     const std::string current_file = __FILE__;
     const std::filesystem::path current_path(current_file);
-    const std::filesystem::path templates_dir = current_path.parent_path().parent_path().parent_path().parent_path() / "examples/templates";
+    const std::filesystem::path templates_dir = current_path.parent_path().parent_path().parent_path() / "examples/templates";
     const std::filesystem::path example_image_path = templates_dir / "image2.zip";
 
     return example_image_path.string();
@@ -23,7 +23,7 @@ std::string get_example_template_path() {
 std::string get_tests_data_template_path() {
     const std::string current_file = __FILE__;
     const std::filesystem::path current_path(current_file);
-    const std::filesystem::path template_path = current_path.parent_path().parent_path().parent_path() / "data/template_without_card_data.zip";
+    const std::filesystem::path template_path = current_path.parent_path().parent_path() / "data/template_without_card_data.zip";
 
     return template_path.string();
 }
@@ -31,7 +31,7 @@ std::string get_tests_data_template_path() {
 std::string get_tests_data_overlayed_result_path() {
     const std::string current_file = __FILE__;
     const std::filesystem::path current_path(current_file);
-    const std::filesystem::path template_path = current_path.parent_path().parent_path().parent_path() / "data/overlayed_result.png";
+    const std::filesystem::path template_path = current_path.parent_path().parent_path() / "data/overlayed_result.png";
 
     return template_path.string();
 }
@@ -41,7 +41,7 @@ std::vector<std::string> get_example_images_path() {
 
     const std::string current_file = __FILE__;
     const std::filesystem::path current_path(current_file);
-    const std::filesystem::path inputs_dir = current_path.parent_path().parent_path().parent_path().parent_path() / "examples/inputs";
+    const std::filesystem::path inputs_dir = current_path.parent_path().parent_path().parent_path() / "examples/inputs";
 
     example_paths.push_back((inputs_dir / "MON055.webp").string());
     example_paths.push_back((inputs_dir / "DYN019.webp").string());
