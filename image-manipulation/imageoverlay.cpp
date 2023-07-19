@@ -1,20 +1,96 @@
 #include "imageoverlay.h"
 
+ImageOverlay::ImageOverlay()
+{
+    template_image = nullptr;
+    images_to_overlay = QVector<Image*>();
+    were_input_images_closed = QVector<bool>();
+}
+
+ImageOverlay::~ImageOverlay()
+{
+    try {
+        if (template_image) {
+            if (was_template_image_closed && template_image->is_open()) template_image->close();
+        }
+        if (!images_to_overlay.empty()) {
+            for (int index = 0; index < images_to_overlay.size() && index < were_input_images_closed.size(); index++) {
+                auto& image = images_to_overlay.at(index);
+                if (image && were_input_images_closed.at(index) && image->is_open()) {
+                    image->close();
+                }
+            }
+        }
+    } catch (...) {
+        // images were deleted beforehand, nothing more to do
+    }
+}
+
 int ImageOverlay::set_template_image(Image* template_image)
 {
+    if (!template_image) throw InvalidValueException("ImageOverlay::set_template_image", "template image", "a nullpointer");
+
+    if (!template_image->is_open()) {
+        template_image->open();
+        was_template_image_closed = true;
+    }
+
+    // BadUsageException is thrown below if the template_image was not marked as a template image
+    int required_image_count = template_image->get_card_positions_size();
+
+    if (required_image_count == 0) {
+        if (was_template_image_closed) {
+            template_image->close();
+            was_template_image_closed = false;
+        }
+        throw InvalidTemplateException("ImageOverlay::set_template_image", "The template image required 0 input image.");
+    }
+
     this->template_image = template_image;
 
-    // return the required count of images:
-    return this->template_image->get_card_positions_size();
+    return required_image_count;
 }
 
 void ImageOverlay::set_images_to_overlay(QVector<Image*> images_to_overlay)
 {
+    if (!template_image) throw BadUsageException("ImageOverlay::set_images_to_overlay", "Template image must be set before calling this method");
+
+    if (!template_image->is_open()) {
+        qDebug() << "WARNING! In ImageOverlay::overlay method. The given template image hasn't been open. "
+                    "This is not the intended usecase, will attempt to open and close the template anyway.";
+        template_image->open();
+        was_template_image_closed = true;
+    }
+
+    if (images_to_overlay.size() != template_image->get_card_positions_size())
+        throw InvalidValueException("ImageOverlay::set_images_to_overlay",
+                                    " of " + std::to_string(template_image->get_card_positions_size()) + " (number of required images)",
+                                    std::to_string(images_to_overlay.size()) + " (number of images provided)");
     this->images_to_overlay = images_to_overlay;
 }
 
 ImageOverlay::OverlayedResult ImageOverlay::overlay()
 {
+    if (!template_image) throw BadUsageException("ImageOverlay::overlay()", "The template image hasn't been set");
+    if (images_to_overlay.empty()) throw BadUsageException("ImageOverlay::overlay()", "The input images haven't been set");
+
+    if (!template_image->is_open()) {
+        qDebug() << "WARNING! In ImageOverlay::overlay method. The given template image hasn't been open. "
+                    "This is not the intended usecase, will attempt to open and close the template anyway.";
+        template_image->open();
+        was_template_image_closed = true;
+    }
+
+    for (int i = 0; i < images_to_overlay.size(); i++) {
+        if (!images_to_overlay.at(i)->is_open()) {
+            qDebug() << "WARNING! In ImageOverlay::overlay method. An input overlay image hasn't been open. "
+                        "This is not the intended usecase, will attempt to open and close the input image anyway.";
+            images_to_overlay[i]->open();
+            were_input_images_closed.append(true);
+        } else {
+            were_input_images_closed.append(false);
+        }
+    }
     OverlayedResult result;
     cv::Mat overlayed_image;
     cv::cvtColor(template_image->get_opencv_image_object(), overlayed_image, cv::COLOR_RGB2BGRA);
@@ -35,7 +111,7 @@ ImageOverlay::OverlayedResult ImageOverlay::overlay()
             transparent_input_image,
             warped_image,
             create_perspective_matrix_for_image(i),
-            get_desired_size(i),
+            get_desired_size(),
             cv::INTER_LINEAR,
             cv::BORDER_TRANSPARENT
         );
@@ -54,10 +130,21 @@ ImageOverlay::OverlayedResult ImageOverlay::overlay()
     result.overlayed_image = overlayed_image;
     result.image_width = template_image->get_opencv_image_object().cols;
     result.image_height = template_image->get_opencv_image_object().rows;
+
+    if (was_template_image_closed) {
+        template_image->close();
+        was_template_image_closed = false;
+    }
+    for (int i = 0; i < images_to_overlay.size(); i++)
+        if (were_input_images_closed.at(i)) {
+            images_to_overlay[i]->close();
+            were_input_images_closed[i] = false;
+        }
+
     return result;
 }
 
-cv::Mat ImageOverlay::create_perspective_matrix_for_image(int image_index)
+cv::Mat ImageOverlay::create_perspective_matrix_for_image(const int& image_index) const
 {
     cv::Mat image = images_to_overlay.value(image_index)->get_opencv_image_object();
 
@@ -73,7 +160,7 @@ cv::Mat ImageOverlay::create_perspective_matrix_for_image(int image_index)
     );
 }
 
-cv::Size ImageOverlay::get_desired_size(int image_index)
+cv::Size ImageOverlay::get_desired_size() const
 {
     cv::Size desired_size;
     desired_size.width = this->template_image->get_opencv_image_object().cols;
@@ -82,7 +169,7 @@ cv::Size ImageOverlay::get_desired_size(int image_index)
     return desired_size;
 }
 
-cv::Mat ImageOverlay::create_mask_from_alpha(const cv::Mat& alpha)
+cv::Mat ImageOverlay::create_mask_from_alpha(const cv::Mat& alpha) const
 {
     cv::Mat mask(alpha.size(), CV_8UC1);
 
@@ -101,7 +188,7 @@ cv::Mat ImageOverlay::create_mask_from_alpha(const cv::Mat& alpha)
     return mask;
 }
 
-QPair<cv::Point2f, cv::Point2f> ImageOverlay::get_bounding_boxes(std::vector<cv::Point2f> points)
+QPair<cv::Point2f, cv::Point2f> ImageOverlay::get_bounding_boxes(const std::vector<cv::Point2f>& points) const
 {
     float min_x_pos = 9999.0;
     float min_y_pos = 9999.0;
