@@ -26,6 +26,23 @@ The project uses the following libraries and those will be required to build.
 
 *Note: The project is developed under the use of linux system ([Pop!_OS](https://pop.system76.com/)) so the CMAKE is only set up to that system only. For now there is no guarantee that you will be able to build and run it over on Windows.* 
 
+### Included dependencies
+The project uses the following dependencies that are included in the source files:
+- [Nlohmann Json](https://json.nlohmann.me/)
+- [CMake Coverage Report by bilke](https://github.com/bilke/cmake-modules/blob/master/CodeCoverage.cmake)
+
+### Testing
+- Build the project
+- Navigate to the build directory
+- Run the tests via: `ctest -C BUILD_TYPE --extra-verbose --output-on-failure` where BUILD_TYPE is the build type for example Debug/Release
+- Run the coverage report: `cmake --build . --target coverage`
+
+##### Latest coverage report: 2023-07-19
+|                   | Exec | Total | Coverage |
+|:-----------------:|:----:|:-----:|:-------:|
+|       Lines       | 775  |  863  |  89.8%  |
+|     Branches      | 969  | 1889  |  51.3%  |
+
 ### Usage
 1. ***The input***
 You will need 2 things: A template and the images you want to overlay on top of that. The template requires a special format, it's a zip file that **must contain an image and json file exactly named as** `image.[jpg/png/...]` and `image_data.json`. The `image_data.json` contains the coordinates where the cards are located in the template. Follow the structure you see in the given [example](https://github.com/KuKetto/FABTemplateGenerator/tree/main/examples/templates).
